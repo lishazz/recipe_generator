@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard|RecipeGen{% endblock title %}
+
+
+{% block style %}
+
+<style>
+    body {
+        background-color: #f4f4f4;
+        font-family: 'Poppins', sans-serif;
+    }
+    .navbar {
+        background: linear-gradient(to right, #ffbb33, #ffbb33);
+        padding: 15px;
+    }
+    .navbar-brand {
+        font-weight: bold;
+        color: #fff !important;
+    }
+    .btn-custom {
+        background-color: #ffbb33;
+        color: #fff;
+        border-radius: 25px;
+        transition: 0.3s;
+        padding: 10px 20px;
+        font-weight: bold;
+    }
+    .btn-custom:hover {
+        background-color: #ff9900;
+    }
+    .dashboard-header {
+        background: linear-gradient(to right, #ffbb33, #ffbb33);
+        color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        margin-bottom: 20px;
+        font-weight: bold;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .list-group-item {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 10px;
+        padding: 15px;
+        font-weight: bold;
+    }
+    .chart-container {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+        width: 45%;
+        float: left;
+        margin-right: 5%;
+    }
+    .recipes-container {
+        width: 50%;
+        float: right;
+    }
+    .clearfix {
+        clear: both;
+    } 
+</style>
+
+{% endblock style %}
+
+{% block navlinks %}
+
+{% endblock navlinks %}
+
+
+{% block messages %}{% endblock messages %}
+    
+{% block content %}
+
+<section class="container mt-4">
+    <div class="chart-container">
+        <h2 class="text-center">Trending Recipes</h2>
+        <canvas id="trendingChart"></canvas>
+    </div>
+    <div class="recipes-container">
+        <div class="dashboard-header">
+            <h2>Top Rated Recipes</h2>
+            <p>Check the most popular recipes based on user ratings.</p>
+        </div>
+        <ul class="list-group" id="top-rated-recipes">
+            <li class="list-group-item">⭐ Spaghetti Carbonara (4.9)</li>
+            <li class="list-group-item">⭐ Chicken Alfredo (4.5)</li>
+            <li class="list-group-item">⭐ Vegan Tofu Stir-fry (5.0)</li>
+            <li class="list-group-item">⭐ Grilled Salmon (4.7)</li>
+            <li class="list-group-item">⭐ Classic Cheeseburger (4.6)</li>
+        </ul>
+    </div>
+</section>
+
+<section class="container mt-4 clearfix">
+    <div class="dashboard-header">
+        <h2>All Generated Recipes</h2>
+        <p>Browse through the complete list of AI-generated recipes.</p>
+    </div>
+    <ul class="list-group" id="all-recipes">
+        <li class="list-group-item">🍽️ Quinoa Avocado Salad (4.2)</li>
+        <li class="list-group-item">🍽️ Spicy Ramen Bowl (4.3)</li>
+        <li class="list-group-item">🍽️ Paneer Butter Masala (4.8)</li>
+        <li class="list-group-item">🍽️ BBQ Chicken Pizza (4.5)</li>
+        <li class="list-group-item">🍽️ Mango Chia Pudding (4.9)</li>
+    </ul>
+</section>
+
+{% endblock content %}
+
+{% block script %}{% endblock script %}

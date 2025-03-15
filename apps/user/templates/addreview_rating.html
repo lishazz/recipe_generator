@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Add Review And Rating|RecipeGen{% endblock title %}
+
+
+{% block style %}
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    .container-custom {
+        max-width: 600px;
+        margin-top: 70px;
+        margin-bottom: 70px;
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .btn {
+        background-color: #ffc107;
+        border: none;
+        color: #000;
+    }
+    .btn:hover {
+        background-color: #e0a800;
+    }
+    .star-rating {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: center;
+    }
+    .star-rating input {
+        display: none;
+    }
+    .star-rating label {
+        font-size: 2rem;
+        color: #ddd;
+        cursor: pointer;
+    }
+    .star-rating input:checked ~ label,
+    .star-rating label:hover,
+    .star-rating label:hover ~ label {
+        color: #ffc107;
+    }
+</style>
+
+{% endblock style %}
+
+{% block navlinks %}{% endblock navlinks %}
+
+
+{% block messages %}{% endblock messages %}
+    
+{% block content %}
+
+<div class="container container-custom">
+    <h2 class="text-center mb-4">Add Review & Rating</h2>
+    <form method="POST" action="/submit_review">
+        <div class="mb-3">
+            <label for="review" class="form-label">Your Review</label>
+            <textarea class="form-control" id="review" name="review" rows="4" placeholder="Write your review here..." required></textarea>
+        </div>
+        <div class="mb-3 text-center">
+            <label class="form-label d-block">Your Rating</label>
+            <div class="star-rating">
+                <input type="radio" id="star5" name="rating" value="5" required/><label for="star5">&#9733;</label>
+                <input type="radio" id="star4" name="rating" value="4"/><label for="star4">&#9733;</label>
+                <input type="radio" id="star3" name="rating" value="3"/><label for="star3">&#9733;</label>
+                <input type="radio" id="star2" name="rating" value="2"/><label for="star2">&#9733;</label>
+                <input type="radio" id="star1" name="rating" value="1"/><label for="star1">&#9733;</label>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn w-50 me-2">Submit Review</button>
+            <button type="button" class="btn w-50">Cancel</button>
+        </div>
+    </form>
+</div>
+
+{% endblock content %}
+
+{% block script %}{% endblock script %}

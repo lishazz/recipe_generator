@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Nutritional Info|RecipeGen{% endblock title %}
+
+
+{% block style %}
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    .container {
+        max-width: 700px;
+        margin-top: 50px;
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .btn {
+        background-color: #ffc107;
+        border: none;
+        color: #000;
+    }
+    .btn:hover {
+        background-color: #e0a800;
+    }
+</style>
+
+{% endblock style %}
+
+{% block navlinks %}{% endblock navlinks %}
+
+
+{% block messages %}{% endblock messages %}
+    
+{% block content %}
+
+<div class="container">
+    <h2 class="text-center mb-4">Nutritional Information for {{ recipe.name }}</h2>
+    
+    <h4>Calories: <span class="text-muted">{{ recipe.calories }} kcal</span></h4>
+    <h4>Macronutrients:</h4>
+    <ul class="list-group mb-4">
+        <li class="list-group-item">Proteins: {{ recipe.proteins }} g</li>
+        <li class="list-group-item">Carbohydrates: {{ recipe.carbohydrates }} g</li>
+        <li class="list-group-item">Fats: {{ recipe.fats }} g</li>
+    </ul>
+    
+    <h4>Micronutrients:</h4>
+    {% comment %} <ul class="list-group mb-4">
+        {% for nutrient, amount in recipe.micronutrients.items() %}
+            <li class="list-group-item">{{ nutrient }}: {{ amount }}</li>
+        {% endfor %}
+    </ul> {% endcomment %}
+    
+    <div class="text-center">
+        <button class="btn w-50">Back to Recipe</button>
+    </div>
+
+{% endblock content %}
+
+{% block script %}{% endblock script %}

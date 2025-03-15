@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}User Settings|RecipeGen{% endblock title %}
+
+
+{% block style %}
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    .container-custom {
+        max-width: 600px;
+        margin-top: 50px;
+        margin-bottom: 50px;
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    
+    .btn-yellow {
+        background-color: #ffc107;
+        border: none;
+        color: #000;
+    }
+    .btn-yellow:hover {
+        background-color: #e0a800;
+    }
+</style>
+
+{% endblock style %}
+
+{% block navlinks %}
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'home' %}">Home</a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'user_dashboard' %}">Dashboard</a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'generate_recipe' %}">Generate Recipe</a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'favourite_recipe' %}">Favourite Recipe</a>
+</li>
+
+
+
+
+{% endblock navlinks %}
+
+
+{% block messages %}{% endblock messages %}
+    
+{% block content %}
+
+<div class="container container-custom">
+    
+        <h2 class="text-center text-dark mb-4">Settings</h2>
+        
+        <form action="/change_password/" method="POST" class="mb-3">
+            {% csrf_token %}
+            <label for="password" class="form-label">Change Password:</label>
+            <input type="password" id="password" name="password" class="form-control" required>
+            <button type="submit" class="btn btn-zom mt-2 w-100">Update Password</button>
+        </form>
+        
+        <form action="/change_email/" method="POST" class="mb-3">
+            {% csrf_token %}
+            <label for="email" class="form-label">Change Email ID:</label>
+            <input type="email" id="email" name="email" class="form-control" required>
+            <button type="submit" class="btn btn-zom mt-2 w-100">Update Email</button>
+        </form>
+        
+        <div class="text-center">
+            <a href="/previous_recipes/" class="btn btn-zom w-100">View Previous Recipes</a>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
+
+{% block script %}{% endblock script %}

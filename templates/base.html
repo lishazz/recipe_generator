@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        {% load static %}
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+        <script src="{% static 'js/jquery.min.js' %}"></script>
+        <script src="{% static 'js/chart.umd.js' %}"></script>
+        <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+        <title>{% block title %}{% endblock title %}</title>
+        <style>
+            nav {
+                background-color: #FC8019;
+            }
+            .navbar-brand {
+                color: #fff;
+            }
+            .nav-link {
+                color:#F5F5F5;
+            }
+            footer {
+                background-color: #fff;
+            }
+            footer p {
+                color: #45553d;
+                margin: 0;
+            }
+            .btn-zom {
+                background-color:#FC8019;
+                color: #F5F5F5;
+                transition: all 0.3s ease;
+            }
+            .btn-zom:hover {
+                border: 1px solid #6c757d;
+                background-color:#F5F5F5;
+                color:#143CC4;
+            }
+        </style>
+
+        {% block style %}{% endblock style %}
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand" href="#">Recipe Generator</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">  <!-- Aligns to right -->
+                        <li class="nav-items">
+                            
+                            {% block navlinks %}
+                                {% comment %} Format 
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'home' %}">Home</a>
+                                </li> 
+                                {% endcomment %}
+                            {% endblock navlinks %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                            </li>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        
+    
+        {% block messages %}{% endblock messages %}
+        
+        {% block content %}{% endblock content %}
+    
+        {% block script %}{% endblock script %}
+
+        <footer class="text-center py-3">
+            <p>&copy; 2025 AI Recipe Generator. All rights reserved.</p>
+        </footer>
+    
+        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    </body>
+</html>

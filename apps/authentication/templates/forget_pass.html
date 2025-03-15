@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}Forgot Password|RecipeGen{% endblock title %}
+
+
+{% block style %}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+    }
+    .card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    .card-header {
+        background-color: transparent;
+        border-bottom: none;
+        padding: 25px 25px 0;
+    }
+    .card-body {
+        padding: 20px 25px 25px;
+    }
+    .form-control {
+        border-radius: 8px;
+        padding: 12px 15px;
+        margin-bottom: 15px;
+        border: 1px solid #e0e0e0;
+        background-color: #f8f9fa;
+    }
+    .form-control:focus {
+        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+        border-color: #86b7fe;
+    }
+    .btn-primary {
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: 500;
+        background-color: #0d6efd;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-secondary {
+        {% comment %} padding: 12px; {% endcomment %}
+        border-radius: 8px;
+        {% comment %} font-weight: 500; {% endcomment %}
+        border: 1px solid #6c757d;
+        color: #6c757d;
+        background-color: transparent;
+        transition: all 0.3s ease;
+    }
+    .btn-outline-secondary:hover {
+        background-color: #6c757d;
+        color: white;
+    }
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 8px;
+        color: #495057;
+    }
+    .form-text {
+        color: #6c757d;
+    }
+    .logo-container {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+    .logo {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #0d6efd;
+        color: white;
+        border-radius: 12px;
+        font-size: 24px;
+        margin: 0 auto;
+    }
+    .card-title {
+        font-weight: 600;
+        color: #212529;
+    }
+    .card-text {
+        color: #6c757d;
+        margin-bottom: 25px;
+    }
+    .back-link {
+        color: #0d6efd;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .back-link:hover {
+        text-decoration: underline;
+    }
+    .input-group-text {
+        background-color: #f8f9fa;
+        border: 1px solid #e0e0e0;
+        border-right: none;
+    }
+    .alert {
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    
+    
+</style>
+
+{% endblock style %}
+
+{% block navlinks %}
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'home' %}">Home</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'register' %}">Signup</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'login_page' %}">Login</a>
+</li>
+
+
+{% endblock navlinks %}
+
+
+{% block messages %}{% endblock messages %}
+    
+{% block content %}
+
+<section class="d-flex justify-content-center align-items-center vh-100">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h3 class="card-title text-center">Forgot Password</h3>
+                        <p class="card-text text-center">Enter your email and we'll send you instructions to reset your password</p>
+                    </div>
+                    <div class="card-body">
+                        <form id="forgot-password-form" action="#" method="POST">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email Address</label>
+                                <div class="input-group">
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                                </div>
+                                <div class="form-text">We'll send a password reset link to this email.</div>
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-zom">
+                                    <i class="fas fa-paper-plane me-2"></i>Send Reset Link
+                                </button>
+                                <a href="login.html" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to Login
+                                </a>
+                            </div>
+                        </form>
+                        
+                        <div id="confirmation" class="alert alert-success mt-3" style="display: none;">
+                            <i class="fas fa-check-circle me-2"></i>
+                            Reset link sent! Please check your email.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
+
+{% block script %}{% endblock script %}

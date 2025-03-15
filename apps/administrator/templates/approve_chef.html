@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Approve Chef|RecipeGen{% endblock title %}
+
+
+{% block style %}
+
+<style>
+    body {
+        background-color: #f4f4f4;
+        font-family: 'Poppins', sans-serif;
+    }
+    .navbar {
+        background: linear-gradient(to right, #ffbb33, #ffdd33);
+        padding: 15px;
+    }
+    .navbar-brand {
+        font-weight: bold;
+        color: #fff !important;
+    }
+    .btn-custom {
+        background-color: #ffbb33;
+        color: #fff;
+        border-radius: 25px;
+        transition: 0.3s;
+        padding: 10px 20px;
+        font-weight: bold;
+    }
+    .btn-custom:hover {
+        background-color: #ffdd33;
+    }
+    .dashboard-header {
+        background: linear-gradient(to right, #ffdd33, #ffbb33);
+        color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        margin-bottom: 20px;
+        font-weight: bold;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .list-group-item {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 10px;
+        padding: 15px;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .btn-group button {
+        margin-left: 5px;
+    }
+</style>
+
+{% endblock style %}
+
+{% block navlinks %}{% endblock navlinks %}
+
+
+{% block messages %}{% endblock messages %}
+    
+{% block content %}
+
+<section class="container mt-4">
+    <div class="dashboard-header">
+        <h2>Pending Chef Approvals</h2>
+        <p>Review and approve chef registrations.</p>
+    </div>
+    <ul class="list-group" id="pending-chefs">
+        <li class="list-group-item">👨‍🍳 Chef Alex Johnson
+            <div class="btn-group">
+                <button class="btn btn-success btn-sm">Approve</button>
+                <button class="btn btn-danger btn-sm">Reject</button>
+            </div>
+        </li>
+        <li class="list-group-item">👨‍🍳 Chef Maria Lopez
+            <div class="btn-group">
+                <button class="btn btn-success btn-sm">Approve</button>
+                <button class="btn btn-danger btn-sm">Reject</button>
+            </div>
+        </li>
+        <li class="list-group-item">👨‍🍳 Chef David Smith
+            <div class="btn-group">
+                <button class="btn btn-success btn-sm">Approve</button>
+                <button class="btn btn-danger btn-sm">Reject</button>
+            </div>
+        </li>
+    </ul>
+</section>
+
+{% endblock content %}
+
+{% block script %}{% endblock script %}

@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}User Dashboard|RecipeGen{% endblock title %}
+
+
+{% block style %}
+<style>
+    .btn-custom {
+        background-color: #ff9900;
+        color: white;
+        font-weight: bold;
+        border-radius: 25px;
+        padding: 8px 20px;
+    }
+    .btn-custom:hover {
+        background-color: #cc7a00;
+    }
+
+    /* Search Bar */
+    .search-container {
+        max-width: 600px;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .search-container input {
+        flex: 1;
+        border-radius: 25px;
+        padding: 10px 20px;
+        border: 2px solid #FC8019;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .search-container button {
+        border-radius: 25px;
+        padding: 10px 20px;
+        background-color: #FC8019;
+        color: white;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .search-container button:hover {
+        border: 1px solid #6c757d;
+        background-color:#F5F5F5;
+        color:#143CC4;
+    }
+
+    /* Recipe Cards */
+    .recipe-card {
+        border-radius: 15px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .recipe-card img {
+        height: 220px;
+        object-fit: cover;
+    }
+    .recipe-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+    }
+</style>
+
+{% endblock style %}
+
+{% block navlinks %}
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'home' %}">Home</a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'generate_recipe' %}">Generate Recipe</a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'favourite_recipe' %}">Favourite Recipe</a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'user_settings' %}">Settings</a>
+</li>
+
+
+{% endblock navlinks %}
+
+
+{% block messages %}{% endblock messages %}
+    
+{% block content %}
+
+<header class="text-center py-4">
+    <h1>Welcome {{ user.username }}, </h1>
+    <p>Discover delicious AI-powered recipes tailored for you.</p>
+</header>
+
+<!-- Search Bar -->
+<section class="container my-4">
+    <div class="search-container">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search for recipes...">
+        <button onclick="searchRecipes()"><i class="bi bi-search"></i> Search</button>
+    </div>
+</section>
+
+<!-- Top Rated Recipes Section -->
+<section class="container my-5">
+    <h2 class="text-center mb-4">🔥 Top Rated Recipes</h2>
+    <div class="row" id="recipeList">
+        <!-- Recipe Card 1 -->
+        <div class="col-md-4">
+            <div class="card recipe-card">
+                <img src="recipe1.jpg" class="card-img-top" alt="Recipe 1">
+                <div class="card-body">
+                    <h5 class="card-title">Spaghetti Carbonara</h5>
+                    <p class="card-text">A creamy Italian pasta dish with crispy bacon.</p>
+                    <button class="btn btn-zom">View Recipe</button>
+                </div>
+            </div>
+        </div>
+        <!-- Recipe Card 2 -->
+        <div class="col-md-4">
+            <div class="card recipe-card">
+                <img src="recipe2.jpg" class="card-img-top" alt="Recipe 2">
+                <div class="card-body">
+                    <h5 class="card-title">Grilled Chicken Salad</h5>
+                    <p class="card-text">A healthy mix of grilled chicken and fresh veggies.</p>
+                    <button class="btn btn-zom">View Recipe</button>
+                </div>
+            </div>
+        </div>
+        <!-- Recipe Card 3 -->
+        <div class="col-md-4">
+            <div class="card recipe-card">
+                <img src="recipe3.jpg" class="card-img-top" alt="Recipe 3">
+                <div class="card-body">
+                    <h5 class="card-title">Chocolate Lava Cake</h5>
+                    <p class="card-text">A gooey and decadent dessert for chocolate lovers.</p>
+                    <button class="btn btn-zom">View Recipe</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}
+
+{% block script %}{% endblock script %}

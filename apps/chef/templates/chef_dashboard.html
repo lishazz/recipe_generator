@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Chef Dashboard|RecipeGen{% endblock title %}
+
+
+{% block style %}
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    .navbar {
+        background: linear-gradient(to right, #ffcc00, #ff9900);
+    }
+    .navbar-brand, .nav-link {
+        color: #fff !important;
+    }
+    .btn-custom {
+        background-color: #ffc800;
+        font-weight: bold;
+        border-radius: 25px;
+    }
+    .btn-custom:hover {
+        background-color: #ffd207;
+        color: white;
+    }
+    .dashboard-card {
+        border-radius: 15px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .dashboard-header {
+        color:#000;
+        padding: 20px;
+        border-radius: 10px;
+    }
+</style>
+
+{% endblock style %}
+
+{% block navlinks %}
+
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="#">Chef Dashboard</a>
+        <div class="d-flex">
+            <button class="btn btn-custom" onclick="logout()">Logout</button>
+        </div>
+    </div>
+</nav>
+
+{% endblock navlinks %}
+
+
+{% block messages %}{% endblock messages %}
+    
+{% block content %}
+
+<section class="container mt-4">
+    <div class="dashboard-header text-center">
+        <h1>Welcome, Chef!</h1>
+        <p>Manage your recipes and view user feedback.</p>
+    </div>
+</section>
+
+<!-- Search Bar -->
+<section class="container my-4">
+    <div class="input-group">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search recipes...">
+        <button class="btn btn-custom" onclick="searchRecipes()">Search</button>
+    </div>
+</section>
+
+<!-- Dashboard Sections -->
+<section class="container my-5">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card dashboard-card p-3">
+                <h4>Manage Recipes</h4>
+                <p>Add, edit, or remove recipes from your collection.</p>
+                <button class="btn btn-custom">Add Recipe</button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card dashboard-card p-3">
+                <h4>User Feedback</h4>
+                <p>Check ratings and reviews from users.</p>
+                <button class="btn btn-custom">View Feedback</button>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card dashboard-card p-3">
+                <h4>Recipe Analytics</h4>
+                <p>View most popular and highest-rated recipes.</p>
+                <button class="btn btn-custom">View Analytics</button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card dashboard-card p-3">
+                <h4>Orders & Requests</h4>
+                <p>Check user requests for custom recipes.</p>
+                <button class="btn btn-custom">View Orders</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}
+
+{% block script %}{% endblock script %}

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Login|RecipeGen{% endblock title %}
+
+{% block style %}
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    .login-container {
+        max-width: 400px;
+        margin: 80px auto;
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .btn-custom {
+        background-color: #ffc506f9;
+        color: #000;
+    }
+    .btn-custom:hover {
+        background-color: #e0b905;
+    }
+</style>
+
+{% endblock style %}
+
+{% block navlinks %}
+
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'home' %}">Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'register' %}">Signup</a>
+    </li>
+
+{% endblock navlinks %}
+
+{% block messages %}{% endblock messages %}
+    
+{% block content %}
+
+<div class="container">
+    <div class="login-container">
+        <h3 class="text-center">Login</h3>
+        <form  method="POST">
+            {% csrf_token %}
+            {{form.as_p}}
+            {% comment %} <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="username" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div> {% endcomment %}
+            <div class="d-flex justify-content-between align-items-center">
+                <a href={% url "forget_pass" %} class="small">Forgot Password?</a>
+            </div>
+            <button type="submit" class="btn btn-zom w-100 mt-3">Login</button>
+        </form>
+        <p class="text-center mt-3">Don't have an account? <a href={% url "register" %}>Sign Up</a></p>
+    </div>
+</div>
+
+{% endblock content %}
+    
+{% block script %}{% endblock script %}

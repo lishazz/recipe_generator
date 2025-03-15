@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% load widget_tweaks %}
+
+{% block title %}Registration|RecipeGen{% endblock title %}
+
+{% block style %}
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    .signup-container {
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .btn-custom {
+        background-color: #ffc506f9;
+        color: #000;
+    }
+    .btn-custom:hover {
+        background-color: #e0b905;
+    }
+</style>
+
+{% endblock style %}
+
+{% block navlinks %}
+
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'home' %}">Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'login_page' %}">Login</a>
+    </li>
+
+{% endblock navlinks %}
+
+
+{% block messages %}{% endblock messages %}
+    
+{% block content %}
+
+<div class="container">
+    <div class="signup-container">
+        <h3 class="text-center">Create an Account</h3>
+        <form method="POST">
+            {% csrf_token %}
+
+            {% for field in form %}
+            <div class="mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                {% render_field field class="form-control" %}
+                {% if field.errors %}
+                    <ul class="errorlist list-unstyled">
+                        {% for error in field.errors %}
+                        <li class="text-danger">{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-zom w-100 mt-3">Sign Up</button>
+        </form>
+        <p class="text-center mt-3">Already have an account? <a href={% url "login_page" %}>Login</a></p>
+    </div>
+</div>
+
+{% endblock content %}
+    
+{% block script %}{% endblock script %}

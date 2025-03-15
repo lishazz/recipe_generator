@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+
+{% block title %}Favourite Recipes|RecipeGen{% endblock title %}
+
+
+{% block style %}
+
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .container-custom {
+        max-width: 1000px;
+        margin-top: 50px;
+        margin-bottom: 50px;
+        background: #fff;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+   
+    .card {
+        border-radius: 10px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+        border: none;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+    }
+    .card-img-wrapper {
+        height: 200px;
+        overflow: hidden;
+        position: relative;
+    }
+    .card-img-top {
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    .card:hover .card-img-top {
+        transform: scale(1.05);
+    }
+    .card-body {
+        padding: 20px;
+    }
+    .card-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+        font-size: 1.2rem;
+    }
+    .card-text {
+        color: #6c757d;
+        margin-bottom: 15px;
+        display: -webkit-box;
+        overflow: hidden;
+    }
+    .recipe-meta {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    .recipe-meta div {
+        display: flex;
+        align-items: center;
+    }
+    .recipe-meta i {
+        margin-right: 5px;
+    }
+    .favorite-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: white;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .favorite-btn i {
+        color: #ff3b57;
+        font-size: 1.2rem;
+    }
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+    .filter-section {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+    .badge {
+        background-color: #ffeeba;
+        color: #6c584c;
+        font-weight: 500;
+        margin-right: 5px;
+        padding: 6px 10px;
+    }
+    .empty-state {
+        text-align: center;
+        padding: 50px 0;
+    }
+    .empty-state i {
+        font-size: 4rem;
+        color: #dee2e6;
+        margin-bottom: 20px;
+    }
+    .pagination {
+        justify-content: center;
+        margin-top: 30px;
+    }
+    .page-link {
+        color: #000;
+        background-color: #fff;
+        border: 1px solid #dee2e6;
+    }
+    .page-link:hover {
+        color: #000;
+        background-color: #ffeeba;
+    }
+    .page-item.active .page-link {
+        background-color: #ffc107;
+        border-color: #ffc107;
+        color: #000;
+    }
+</style>
+
+{% endblock style %}
+
+{% block navlinks %}
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'home' %}">Home</a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'user_dashboard' %}">Dashboard</a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'generate_recipe' %}">Generate Recipe</a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'user_settings' %}">Settings</a>
+</li>
+
+
+{% endblock navlinks %}
+
+
+{% block messages %}{% endblock messages %}
+    
+{% block content %}
+
+<div class="container">
+    <div class="header-section">
+        <h2>Your Favourite Recipes</h2>
+        <div>
+            <button class="btn btn-zom" data-bs-toggle="modal" data-bs-target="#createCollectionModal">
+                <i class="fas fa-folder-plus"></i> Create Collection
+            </button>
+        </div>
+    </div>
+    
+    <div class="filter-section">
+        <div class="row">
+            <div class="col-md-4 mb-2">
+                <select class="form-select" id="filterCuisine">
+                    <option value="">All Cuisines</option>
+                    <option value="italian">Italian</option>
+                    <option value="mexican">Mexican</option>
+                    <option value="indian">Indian</option>
+                    <option value="chinese">Chinese</option>
+                    <option value="american">American</option>
+                </select>
+            </div>
+            <div class="col-md-4 mb-2">
+                <select class="form-select" id="filterDietaryRestriction">
+                    <option value="">All Recipes</option>
+                    <option value="vegetarian">Vegetarian</option>
+                    <option value="vegan">Vegan</option>
+                    <option value="gluten-free">Gluten-Free</option>
+                    <option value="dairy-free">Dairy-Free</option>
+                </select>
+            </div>
+            <div class="col-md-4 mb-2">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search recipes..." id="searchRecipes">
+                    <button class="btn btn-zom" type="button" id="searchButton">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% if favourite_recipes %}
+    <div class="row" id="recipesContainer">
+        {% for recipe in favourite_recipes %}
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card">
+                <div class="card-img-wrapper">
+                    <img src="{{ recipe.image_url }}" class="card-img-top" alt="{{ recipe.name }}">
+                    <div class="favorite-btn">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ recipe.name }}</h5>
+                    <div class="recipe-meta">
+                        <div>
+                            <i class="far fa-clock"></i> {{ recipe.total_time }} mins
+                        </div>
+                        <div>
+                            <i class="fas fa-utensils"></i> {{ recipe.servings }} servings
+                        </div>
+                    </div>
+                    <p class="card-text">{{ recipe.description }}</p>
+                    <div class="mb-3">
+                        <span class="badge">{{ recipe.cuisine }}</span>
+                        {% if recipe.is_vegetarian %}
+                        <span class="badge">Vegetarian</span>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a href="/recipe/{{ recipe.id }}" class="btn btn-zom w-100">View Recipe</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <nav aria-label="Recipe pagination">
+        <ul class="pagination">
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+            </li>
+            <li class="page-item active" aria-current="page">
+                <a class="page-link" href="#">1</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+            </li>
+        </ul>
+    </nav>
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-heart-broken"></i>
+        <h4>No favourite recipes yet</h4>
+        <p class="text-muted">Start exploring and saving recipes you love!</p>
+        <a href="/recipes" class="btn btn-zom mt-3">Explore Recipes</a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Create Collection Modal -->
+<div class="modal fade" id="createCollectionModal" tabindex="-1" aria-labelledby="createCollectionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createCollectionModalLabel">Create Recipe Collection</h5>
+                <button type="button" class="btn-zom" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="collectionForm">
+                    <div class="mb-3">
+                        <label for="collectionName" class="form-label">Collection Name</label>
+                        <input type="text" class="form-control" id="collectionName" placeholder="e.g., Weeknight Dinners">
+                    </div>
+                    <div class="mb-3">
+                        <label for="collectionDescription" class="form-label">Description (Optional)</label>
+                        <textarea class="form-control" id="collectionDescription" rows="3" placeholder="Describe what this collection is about"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-zom" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-zom">Create Collection</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block script %}{% endblock script %}
