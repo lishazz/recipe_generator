@@ -61,14 +61,16 @@
                 <button type="reset" class="btn btn-zom w-50">Clear</button>
             </div>
         </form> {% endcomment %}
-        <form method="POST">
+        <form method="POST" id="recipeForm">
             {% csrf_token %}
             {{ form.as_p }}
             <div class="d-flex justify-content-between">
-                <button type="submit" class="btn btn-zom w-50 me-2">Submit</button>
-                <button type="reset" class="btn btn-zom w-50">Clear</button>
+                <button type="submit" class="btn btn-zom w-100 me-2">Generate Recipe</button>
             </div>
         </form>
+        
+        
+        
         
         {% if ingredients %}
             <div>
@@ -80,7 +82,23 @@
                 </ul>
             </div>
         {% endif %}
-        
+        {% if title %}
+        <h2>
+            {{title}}
+        </h2>
+        {% endif %}
+        {% load markdownify %}
+        {% if instructions %}
+            <div>
+                <ol>
+                {% for step in instructions %}
+                <li> {{ step.content }}</li>
+            {% endfor %}
+                </ol>
+            </div>
+        {% endif %}
+
+
 
         <div id="recipeResults" class="mt-4">
             {% if recipes %}
@@ -109,4 +127,6 @@
 
 {% endblock content %}
 
-{% block script %}{% endblock script %}
+{% block script %}
+
+{% endblock script %}

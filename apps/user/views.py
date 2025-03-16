@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from apps.common.decorator import user_required
 from .forms import IngredientForm
+from apps.aistudio.utils import generate
+import json
 
 @login_required
 @user_required
@@ -18,22 +20,27 @@ def addreview_rating(request):
 @user_required
 def generate_recipe(request):
     form = IngredientForm()
-    recipes = []
+    instructions = ""
+    title = ""
     ingredients = []
 
     if request.method == "POST":
         form = IngredientForm(request.POST)
         if form.is_valid():
             ingredients_input = form.cleaned_data["ingredients"]
-            ingredients = [ingredient.strip() for ingredient in ingredients_input.split(",")]
-            # Logic to fetch recipes based on ingredients goes here
-            # Example:
-            # recipes = Recipe.objects.filter(ingredients__name__in=ingredients)
+            ingredients = [ingredient.strip() for ingredient in ingredients_input.split(",")]  # Ensure it's a list
+
+            # Generate recipe
+            generated_recipe = generate(ingredients)
+            print(f"Generated Recipe: {generated_recipe} END")
+            title = generated_recipe['response']['RecipeTitle']
+            instructions = generated_recipe['response']['Instructions']
 
     return render(request, "generate_recipe.html", {
         "form": form,
-        "recipes": recipes,
-        "ingredients": ingredients
+        "title": title,
+        "ingredients": ingredients,
+        "instructions": instructions,
     })
 
 
