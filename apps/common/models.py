@@ -41,10 +41,10 @@ class Ingredient(models.Model):
     )
     name = models.CharField(max_length=50, unique=True)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='other')
-    calories_per_100g = models.FloatField(validators=[MinValueValidator(0)])
-    protein_per_100g = models.FloatField(validators=[MinValueValidator(0)])
-    carbs_per_100g = models.FloatField(validators=[MinValueValidator(0)])
-    fats_per_100g = models.FloatField(validators=[MinValueValidator(0)])
+    calories_per_100g = models.FloatField(validators=[MinValueValidator(0)],null='false')
+    protein_per_100g = models.FloatField(validators=[MinValueValidator(0)],null='false')
+    carbs_per_100g = models.FloatField(validators=[MinValueValidator(0)],null='false')
+    fats_per_100g = models.FloatField(validators=[MinValueValidator(0)],null='false')
 
     def __str__(self):
         return f"Ingredient: {self.name} ({self.category})"
@@ -64,6 +64,8 @@ class Recipe(models.Model):
     recipe_image = models.ImageField(upload_to='recipe_images/', null=True, blank=True )
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     ai_generated = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"Recipe: {self.title} ({self.description})"

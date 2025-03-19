@@ -6,10 +6,8 @@
 {% block style %}
 
 <style>
-    body {
-        background-color: #f8f9fa;
-    }
-    .container {
+   
+    .container-custom {
         max-width: 700px;
         margin-top: 50px;
         background: #fff;
@@ -29,35 +27,75 @@
 
 {% endblock style %}
 
-{% block navlinks %}{% endblock navlinks %}
+{% block navlinks %}
+
+
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'home' %}">Home</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'user_dashboard' %}">Dashboard</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'generate_recipe' %}">Generate recipe</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'favourite_recipe' %}">Favourite Recipe</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'user_settings' %}">Settings</a>
+    </li>
+
+{% endblock navlinks %}
 
 
 {% block messages %}{% endblock messages %}
     
 {% block content %}
 
-<div class="container">
-    <h2 class="text-center mb-4">{{ recipe.name }}</h2>
+
+    {% comment %} <h4>Instructions:</h4>
+    <p></p>
+</div> {% endcomment %}
+
+
+
+<div class="container container-custom">
+    <h2 class="text-center mb-4">{{ recipe.title }}</h2>
     <p class="text-muted text-center">{{ recipe.description }}</p>
     
     <h4>Ingredients:</h4>
     <ul class="list-group mb-4">
-        {% for ingredient in recipe.ingredients %}
-            <li class="list-group-item">{{ ingredient }}</li>
+        {% for item in ingredients %}
+            <li>{{ item.ingredient.name }} - {{ item.quantity }} g</li>
         {% endfor %}
     </ul>
 
+    <h4>Category</h4>
+        <div>
+            <p>{{recipe.category}}</p>
+        </div>
+
     <h4>Step-by-Step Instructions:</h4>
-    <ol class="list-group list-group-numbered mb-4">
-        {% for step in recipe.instructions %}
-            <li class="list-group-item">{{ step }}</li>
-        {% endfor %}
-    </ol>
+   
+            <div>
+                <ul>
+            
+                <li> {{ recipe.instruction }}</li>
+
+                </ul>
+            </div>
+    <h4>Cooking Time: </h4>
+            <p>{{recipe.cook_time}} min</p>
     
     <div class="d-flex justify-content-between">
-        <button class="btn w-50 me-2">Back to Recipes</button>
-        <button class="btn w-50 me-2">Add to favourite</button>
-        <button class="btn w-50">Add Review & Rating</button>
+        <a href="{% url 'generate_recipe' %}"class="btn w-50 me-2">Back to Recipe</a>
+        <a href="{% url 'favourite_recipe' %}"class="btn w-50 me-2">Add to favourite</an>
+        <a href="{% url 'addreview_rating' %}"class="btn w-50">Add Review & Rating</a>
     </div>
 </div>
 

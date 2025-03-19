@@ -32,23 +32,47 @@ def generate(ingredient_list):
             properties = {
                 "response": genai.types.Schema(
                     type = genai.types.Type.OBJECT,
-                    required = ["RecipeTitle", "Ingredients", "Category", "Instructions", "CookingTime"],
+                    required = ["RecipeTitle","Description", "Ingredients", "Category", "Instructions", "CookingTime"],
                     properties = {
                         "RecipeTitle": genai.types.Schema(
                             type = genai.types.Type.STRING,
+                        ),
+                        "Description": genai.types.Schema(
+                            type = genai.types.Type.STRING,
+                            description = "Short description about the recipe, maximum 50 tokens",
                         ),
                         "Ingredients": genai.types.Schema(
                             type = genai.types.Type.ARRAY,
                             items = genai.types.Schema(
                                 type = genai.types.Type.OBJECT,
-                                required = ["name", "quantity"],
+                                required = ["name", "quantity","category","calories","carbohydrates","protein","fats"],
                                 properties = {
                                     "name": genai.types.Schema(
                                         type = genai.types.Type.STRING,
                                     ),
                                     "quantity": genai.types.Schema(
-                                        type = genai.types.Type.STRING,
+                                        type = genai.types.Type.NUMBER,
                                         description = "Strictly use quantity in terms of grams",
+                                    ),
+                                    "category": genai.types.Schema(
+                                        type = genai.types.Type.STRING,
+                                        description = "choose from choices ['vegetable', 'fruit','meat','dairy','grain','other']",
+                                    ),
+                                    "calories": genai.types.Schema(
+                                        type = genai.types.Type.NUMBER,
+                                        description = "Strictly use calories per 100g ",
+                                    ),
+                                    "carbohydrates": genai.types.Schema(
+                                        type = genai.types.Type.NUMBER,
+                                        description = "Strictly use carbohydrates per 100g ",
+                                    ),
+                                    "protein": genai.types.Schema(
+                                        type = genai.types.Type.NUMBER,
+                                        description = "Strictly use proteins per 100g",
+                                    ),
+                                    "fats": genai.types.Schema(
+                                        type = genai.types.Type.NUMBER,
+                                        description = "Strictly use fat per 100g ",
                                     ),
                                 },
                             ),

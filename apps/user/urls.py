@@ -10,4 +10,5 @@ urlpatterns = [
     path('user_settings/',views.user_settings,name='user_settings'),
     path('user_view_recipe/',views.user_view_recipe,name='user_view_recipe'),
     path('favourite_recipe/',views.favourite_recipe,name='favourite_recipe'),
+    path("recipe/<int:recipe_id>/", views.user_view_recipe, name="user_view_recipe"),
 ]
