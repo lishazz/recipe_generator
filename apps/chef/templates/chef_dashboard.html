@@ -39,14 +39,21 @@
 
 {% block navlinks %}
 
-<nav class="navbar navbar-expand-lg">
-    <div class="container">
-        <a class="navbar-brand" href="#">Chef Dashboard</a>
-        <div class="d-flex">
-            <button class="btn btn-custom" onclick="logout()">Logout</button>
-        </div>
-    </div>
-</nav>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'home' %}">Home</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'create_recipe' %}">Create Recipe</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'view_review' %}">View Reviews</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'view_myrecipe' %}">View My Recipe</a>
+</li>
+
+
+
 
 {% endblock navlinks %}
 
@@ -66,7 +73,7 @@
 <section class="container my-4">
     <div class="input-group">
         <input type="text" id="searchInput" class="form-control" placeholder="Search recipes...">
-        <button class="btn btn-custom" onclick="searchRecipes()">Search</button>
+        <button class="btn btn-zom" onclick="searchRecipes()">Search</button>
     </div>
 </section>
 
@@ -77,14 +84,14 @@
             <div class="card dashboard-card p-3">
                 <h4>Manage Recipes</h4>
                 <p>Add, edit, or remove recipes from your collection.</p>
-                <button class="btn btn-custom">Add Recipe</button>
+                <a href="{% url 'create_recipe' %}"class="btn btn-zom">Add Recipe</a>
             </div>
         </div>
         <div class="col-md-6">
             <div class="card dashboard-card p-3">
                 <h4>User Feedback</h4>
                 <p>Check ratings and reviews from users.</p>
-                <button class="btn btn-custom">View Feedback</button>
+                <a href="{% url 'view_review' %}" class="btn btn-zom">View Feedback</a>
             </div>
         </div>
     </div>
@@ -93,14 +100,7 @@
             <div class="card dashboard-card p-3">
                 <h4>Recipe Analytics</h4>
                 <p>View most popular and highest-rated recipes.</p>
-                <button class="btn btn-custom">View Analytics</button>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card dashboard-card p-3">
-                <h4>Orders & Requests</h4>
-                <p>Check user requests for custom recipes.</p>
-                <button class="btn btn-custom">View Orders</button>
+                <button class="btn btn-zom">View Analytics</button>
             </div>
         </div>
     </div>
