@@ -9,12 +9,6 @@
     body {
         background-color: #f8f9fa;
     }
-    .navbar {
-        background: linear-gradient(to right, #ffcc00, #ff9900);
-    }
-    .navbar-brand, .nav-link {
-        color: #fff !important;
-    }
     .btn-custom {
         background-color: #ffc800;
         font-weight: bold;
@@ -64,7 +58,7 @@
 
 <section class="container mt-4">
     <div class="dashboard-header text-center">
-        <h1>Welcome, Chef!</h1>
+        <h1>Welcome, {{user.username}}</h1>
         <p>Manage your recipes and view user feedback.</p>
     </div>
 </section>

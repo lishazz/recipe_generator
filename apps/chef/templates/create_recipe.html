@@ -1,15 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Create REcipe|RecipeGen{% endblock title %}
-
+{% block title %}Create Recipe | RecipeGen{% endblock title %}
 
 {% block style %}
-
 <style>
     body {
         background-color: antiquewhite;
     }
-    .container-custom{
+    .container-custom {
         max-width: 600px;
         margin: auto;
         padding-top: 50px;
@@ -21,18 +19,16 @@
     .btn-primary {
         background-color: #ffd106;
         border: none;
-        color:black;
+        color: black;
     }
     .btn-primary:hover {
         background-color: #fff700;
-        color:white;
+        color: white;
     }
 </style>
-
 {% endblock style %}
 
 {% block navlinks %}
-
 <li class="nav-item">
     <a class="nav-link" href="{% url 'home' %}">Home</a>
 </li>
@@ -45,59 +41,49 @@
 <li class="nav-item">
     <a class="nav-link" href="{% url 'view_myrecipe' %}">View My Recipe</a>
 </li>
-
 {% endblock navlinks %}
 
-
-{% block messages %}{% endblock messages %}
-    
 {% block content %}
-
 <div class="container container-custom">
     <div class="card p-4">
         <h2 class="text-center text-dark mb-4">Create a New Recipe</h2>
-        <form action="/submit_recipe/" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
-            
-            
-            <div class="mb-3">
-                <label for="dish_name" class="form-label">Name of Dish:</label>
-                <input type="text" id="dish_name" name="dish_name" class="form-control" required>
-                <div class="invalid-feedback">Please enter the dish name.</div>
-            </div>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
             
             <div class="mb-3">
-                <label for="dish_type" class="form-label">Type of Dish:</label>
-                <select id="dish_type" name="dish_type" class="form-select" required>
-                    <option value="">Select Type</option>
-                    <option value="veg">Vegetarian</option>
-                    <option value="non-veg">Non-Vegetarian</option>
-                </select>
-                <div class="invalid-feedback">Please select a dish type.</div>
+                {{ form.title.label_tag }}
+                {{ form.title }}
             </div>
-            
+
             <div class="mb-3">
-                <label for="ingredients" class="form-label">Ingredients:</label>
-                <textarea id="ingredients" name="ingredients" class="form-control" rows="4" required></textarea>
-                <div class="invalid-feedback">Please enter the ingredients.</div>
+                {{ form.category.label_tag }}
+                {{ form.category }}
             </div>
-            
+
             <div class="mb-3">
-                <label for="steps" class="form-label">Step-by-Step Guidance:</label>
-                <textarea id="steps" name="steps" class="form-control" rows="6" required></textarea>
-                <div class="invalid-feedback">Please enter the steps.</div>
+                {{ form.description.label_tag }}
+                {{ form.description }}
             </div>
-            
+
             <div class="mb-3">
-                <label for="image" class="form-label">Upload Image:</label>
-                <input type="file" id="image" name="image" class="form-control" accept="image/*" required>
-                <div class="invalid-feedback">Please upload an image.</div>
+                {{ form.instruction.label_tag }}
+                {{ form.instruction }}
             </div>
-            
-            <button type="submit" class="btn btn-primary w-100">Submit Recipe</button>
+
+            <div class="mb-3">
+                {{ form.cook_time.label_tag }}
+                {{ form.cook_time }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.recipe_image.label_tag }}
+                {{ form.recipe_image }}
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-zom w-100">Submit Recipe</button>
+            </div>
         </form>
     </div>
 </div>
-
 {% endblock content %}
-
-{% block script %}{% endblock script %}
