@@ -1,7 +1,9 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from apps.common.decorator import chef_required
-from .forms import RecipeForm
+from .forms import RecipeForm,IngredientFormSet
+from apps.common.models import Recipe,Ingredient,RecipeIngredient
+
 @login_required
 @chef_required
 def chef_dashboard(request):
@@ -12,23 +14,73 @@ def chef_dashboard(request):
 def create_recipe(request):
     if request.method == "POST":
         form = RecipeForm(request.POST, request.FILES)
-        if form.is_valid():
-            recipe = form.save(commit=False)  # Don't save yet
-            recipe.created_by = request.user  # Assign the logged-in user
-            recipe.save()  # Now save with the user
-            return redirect("chef_dashboard")  # Redirect after successful save
-    else:
-        form = RecipeForm()  # Instantiate an empty form
-    
-    return render(request, "create_recipe.html", {"form": form})
+        ingredient_formset = IngredientFormSet(request.POST)
 
+        if form.is_valid() and ingredient_formset.is_valid():
+            recipe = form.save(commit=False)
+            recipe.created_by = request.user
+            recipe.save()
+
+            for ingredient_form in ingredient_formset:
+                name = ingredient_form.cleaned_data.get("ingredient_name")
+                quantity = ingredient_form.cleaned_data.get("ingredient_quantity")
+
+                if name and quantity:  # Ensure valid data
+                    ingredient, created = Ingredient.objects.get_or_create(name=name.lower())
+                    RecipeIngredient.objects.create(recipe=recipe, ingredient=ingredient, quantity=quantity)
+
+            return redirect('view_myrecipe')  # Redirect to recipe list
+
+    else:
+        form = RecipeForm()
+        ingredient_formset = IngredientFormSet()
+
+    return render(request, 'create_recipe.html', {'form': form, 'ingredient_formset': ingredient_formset})
 
 @login_required
 @chef_required
 def view_review(request):
     return render(request,'view_review.html')
 
+
 @login_required
 @chef_required
 def view_myrecipe(request):
-    return render(request,"view_myrecipe.html")
+    if request.user.is_authenticated:
+        recipes = Recipe.objects.filter(created_by=request.user)  # Filter recipes by logged-in user
+    else:
+        recipes = None  # No recipes if the user is not logged in
+
+    return render(request, 'view_myrecipe.html', {'recipes': recipes})
+
+@login_required
+@chef_required
+def recipe_detail(request, recipe_id):
+    """Display the details of a specific recipe."""
+    recipe = get_object_or_404(Recipe, id=recipe_id, created_by=request.user)
+    return render(request, 'recipe_detail.html', {'recipe': recipe})
+
+
+@login_required
+@chef_required
+def edit_recipe(request, id):
+    recipe = get_object_or_404(Recipe, id=id)
+    if request.method == "POST":
+        form = RecipeForm(request.POST, request.FILES)
+        if form.is_valid():
+            recipe = form.save(commit=False)  # Don't save yet
+            recipe.created_by = request.user  # Assign the logged-in user
+            recipe.save()  # Now save with the user
+            return redirect("chef_dashboard")  # Redirect after successful save
+    else:
+        form = RecipeForm() 
+
+    return render(request, 'edit_recipe.html', {'form': form})
+
+@login_required
+@chef_required
+def delete_recipe(request, id):
+    recipe = get_object_or_404(Recipe, id=id)
+    if request.method == "POST":
+        recipe.delete()
+        return redirect('chef_dashboard')

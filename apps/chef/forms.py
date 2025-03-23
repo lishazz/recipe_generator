@@ -1,15 +1,26 @@
 from django import forms
-from apps.common.models import Recipe  
+from django.forms import formset_factory
+from apps.common.models import Recipe, RecipeIngredient
 
 class RecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
-        fields = ['title', 'category', 'description', 'instruction', 'cook_time', 'recipe_image']
+        fields = ["title", "category", "description", "instruction", "cook_time", "recipe_image"]
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
-            'category': forms.Select(attrs={'class': 'form-select', 'required': True}, choices=Recipe.CATEGORY_CHOICES),
-            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'required': True}),
-            'instruction': forms.Textarea(attrs={'class': 'form-control', 'rows': 6, 'required': True}),
-            'cook_time': forms.NumberInput(attrs={'class': 'form-control', 'required': True}),
-            'recipe_image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            "title": forms.TextInput(attrs={"class": "form-control form-control-sm"}),
+            "category": forms.Select(attrs={"class": "form-control form-control-sm"}),
+            "description": forms.Textarea(attrs={"class": "form-control form-control-sm", "rows": 2}),
+            "instruction": forms.Textarea(attrs={"class": "form-control form-control-sm", "rows": 3}),
+            "cook_time": forms.NumberInput(attrs={"class": "form-control form-control-sm"}),
+            "recipe_image": forms.FileInput(attrs={"class": "form-control form-control-sm"}),
         }
+
+class IngredientForm(forms.Form):
+    ingredient_name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control form-control-sm'}))
+    ingredient_quantity = forms.FloatField(min_value=0, widget=forms.NumberInput(attrs={'class': 'form-control form-control-sm'}))
+
+IngredientFormSet = formset_factory(IngredientForm, extra=3)  # Default 3 ingredient fields
+
+
+
+

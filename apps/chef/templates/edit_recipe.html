@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Recipe | RecipeGen{% endblock title %}
+
+{% block navlinks %}
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'home' %}">Home</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'chef_dashboard' %}">Dashboard</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'create_recipe' %}">Add Recipe</a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'view_myrecipe' %}">View Recipe</a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'view_review' %}">View Reviews</a>
+</li>
+
+{% endblock navlinks %}
+
+{% block content %}
+<div class="container my-4">
+    <h2 class="text-center mb-4">✏️ Edit Recipe</h2>
+    <div class="card shadow-sm p-4">
+        <form method="post" novalidate>
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label for="id_title" class="form-label">Recipe Title</label>
+                <input type="text" id="id_title" name="title" class="form-control" value="{{ form.title.value|default:'' }}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="id_category" class="form-label">Category</label>
+                <select id="id_category" name="category" class="form-select" required>
+                    {{ form.category }}
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label for="id_cook_time" class="form-label">Cook Time (minutes)</label>
+                <input type="number" id="id_cook_time" name="cook_time" class="form-control" value="{{ form.cook_time.value|default:'' }}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="id_description" class="form-label">Description</label>
+                <textarea id="id_description" name="description" class="form-control" rows="3" required>{{ form.description.value|default:'' }}</textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label for="id_instruction" class="form-label">Instructions</label>
+                <textarea id="id_instruction" name="instruction" class="form-control" rows="5" required>{{ form.instruction.value|default:'' }}</textarea>
+            </div>
+            
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'chef_dashboard' %}" class="btn btn-zom w-50 me-2">Cancel</a>
+                <button type="submit" class="btn btn-zom w-50">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

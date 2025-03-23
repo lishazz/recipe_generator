@@ -1,87 +1,27 @@
 {% extends "base.html" %}
 
-{% block title %}Create Recipe | RecipeGen{% endblock title %}
-
-{% block style %}
-<style>
-    body {
-        background-color: antiquewhite;
-    }
-    .container-custom {
-        max-width: 600px;
-        margin: auto;
-        padding-top: 50px;
-    }
-    .card {
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    .btn-primary {
-        background-color: #ffd106;
-        border: none;
-        color: black;
-    }
-    .btn-primary:hover {
-        background-color: #fff700;
-        color: white;
-    }
-</style>
-{% endblock style %}
-
-{% block navlinks %}
-<li class="nav-item">
-    <a class="nav-link" href="{% url 'home' %}">Home</a>
-</li>
-<li class="nav-item">
-    <a class="nav-link" href="{% url 'chef_dashboard' %}">Dashboard</a>
-</li>
-<li class="nav-item">
-    <a class="nav-link" href="{% url 'view_review' %}">View Reviews</a>
-</li>
-<li class="nav-item">
-    <a class="nav-link" href="{% url 'view_myrecipe' %}">View My Recipe</a>
-</li>
-{% endblock navlinks %}
-
 {% block content %}
-<div class="container container-custom">
-    <div class="card p-4">
-        <h2 class="text-center text-dark mb-4">Create a New Recipe</h2>
+<div class="container" style="max-width: 750px;">
+    <div class="card p-2">
+        <h4 class="text-center text-dark mb-2">Create Recipe</h4>
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            
-            <div class="mb-3">
-                {{ form.title.label_tag }}
-                {{ form.title }}
-            </div>
+            {{ form.as_p }}  <!-- Now, it will include the applied styles -->
 
-            <div class="mb-3">
-                {{ form.category.label_tag }}
-                {{ form.category }}
-            </div>
-
-            <div class="mb-3">
-                {{ form.description.label_tag }}
-                {{ form.description }}
-            </div>
-
-            <div class="mb-3">
-                {{ form.instruction.label_tag }}
-                {{ form.instruction }}
-            </div>
-
-            <div class="mb-3">
-                {{ form.cook_time.label_tag }}
-                {{ form.cook_time }}
-            </div>
-
-            <div class="mb-3">
-                {{ form.recipe_image.label_tag }}
-                {{ form.recipe_image }}
+            <div class="mb-2">
+                <label class="small">Ingredients:</label>
+                {{ ingredient_formset.management_form }}
+                {% for ingredient_form in ingredient_formset %}
+                    <div class="d-flex mb-1">
+                        {{ ingredient_form.ingredient_name }}
+                        {{ ingredient_form.ingredient_quantity }}
+                    </div>
+                {% endfor %}
             </div>
 
             <div class="d-flex justify-content-between">
-                <button type="submit" class="btn btn-zom w-100">Submit Recipe</button>
+                <button type="submit" class="btn btn-zom btn-sm w-50">Submit</button>
+                <input type="reset" class="btn btn-zom btn-sm w-50">
             </div>
         </form>
     </div>
