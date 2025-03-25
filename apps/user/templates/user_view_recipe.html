@@ -95,7 +95,7 @@
     <div class="d-flex justify-content-between">
         <a href="{% url 'generate_recipe' %}"class="btn w-50 me-2">Back to Recipe</a>
         <a href="{% url 'favourite_recipe' %}"class="btn w-50 me-2">Add to favourite</an>
-        <a href="{% url 'addreview_rating' %}"class="btn w-50">Add Review & Rating</a>
+        <a href="{% url 'addreview_rating' recipe.id%}"class="btn w-50">Add Review & Rating</a>
     </div>
 </div>
 

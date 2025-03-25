@@ -7,12 +7,12 @@ class RecipeForm(forms.ModelForm):
         model = Recipe
         fields = ["title", "category", "description", "instruction", "cook_time", "recipe_image"]
         widgets = {
-            "title": forms.TextInput(attrs={"class": "form-control form-control-sm"}),
-            "category": forms.Select(attrs={"class": "form-control form-control-sm"}),
-            "description": forms.Textarea(attrs={"class": "form-control form-control-sm", "rows": 2}),
-            "instruction": forms.Textarea(attrs={"class": "form-control form-control-sm", "rows": 3}),
-            "cook_time": forms.NumberInput(attrs={"class": "form-control form-control-sm"}),
-            "recipe_image": forms.FileInput(attrs={"class": "form-control form-control-sm"}),
+            "title": forms.TextInput(attrs={"class": "form-control "}),
+            "category": forms.Select(attrs={"class": "form-control form-select "}),
+            "description": forms.Textarea(attrs={"class": "form-control ", "rows": 2}),
+            "instruction": forms.Textarea(attrs={"class": "form-control ", "rows": 3}),
+            "cook_time": forms.NumberInput(attrs={"class": "form-control "}),
+            "recipe_image": forms.FileInput(attrs={"class": "form-control "}),
         }
 
 class IngredientForm(forms.Form):

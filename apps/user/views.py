@@ -1,29 +1,60 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from apps.common.decorator import user_required
 from .forms import IngredientForm
 from apps.aistudio.utils import generate
 from django.db import IntegrityError
 from titlecase import titlecase
-from apps.common.models import Recipe, GenerateRecipe, Ingredient, RecipeIngredient
+from apps.common.models import Recipe, GenerateRecipe, Ingredient, RecipeIngredient,Rating
 import json
+from django.contrib import messages
 
 @login_required
 @user_required
 def user_dashboard(request):
-    return render(request,'user_dashboard.html')
-
+    recipe_list = Recipe.objects.all()
+    context = {
+        "recipe_list":recipe_list
+    }
+    return render(request,'user_dashboard.html', context)
 
 @login_required
-@user_required
-def addreview_rating(request):
-    return render(request,"addreview_rating.html")
+def addreview_rating(request, recipe_id):  # Expect recipe_id as a parameter
+    recipe = get_object_or_404(Recipe, id=recipe_id)  # Fetch recipe safely
 
-# from django.shortcuts import render, redirect
-# from django.contrib.auth.decorators import login_required
-# from .forms import IngredientForm
+    if request.method == "POST":
+        review_text = request.POST.get("review")
+        rating_value = request.POST.get("rating")
 
-# from .recipe_generator import generate  # Ensure this function generates recipes
+        if not rating_value:
+            messages.error(request, "Please select a rating.")
+            return redirect(f"/addreview/{recipe.id}")
+
+        # Ensure rating is valid
+        try:
+            rating_value = int(rating_value)
+            if rating_value < 1 or rating_value > 5:
+                raise ValueError
+        except ValueError:
+            messages.error(request, "Invalid rating value.")
+            return redirect(f"/addreview/{recipe.id}")
+
+        # Check if the user has already rated the recipe
+        existing_rating = Rating.objects.filter(user=request.user, recipe=recipe).first()
+        if existing_rating:
+            existing_rating.rating = rating_value
+            existing_rating.review = review_text
+            existing_rating.save()
+            messages.success(request, "Your review has been updated.")
+        else:
+            Rating.objects.create(user=request.user, recipe=recipe, rating=rating_value, review=review_text)
+            messages.success(request, "Review submitted successfully.")
+
+        return redirect('user_view_recipe', recipe_id)  # Redirect to recipe page
+
+    return render(request, "addreview_rating.html", {"recipe": recipe})
+
+
 
 @login_required
 def generate_recipe(request):

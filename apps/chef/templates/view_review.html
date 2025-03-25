@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load custom_filters %}
 {% block title %}View Review|RecipeGen{% endblock title %}
 
 
@@ -9,7 +9,7 @@
     body {
         background-color: #f8f9fa;
     }
-    .container {
+    .container custom{
         max-width: 800px;
         margin-top: 50px;
         background: #fff;
@@ -37,21 +37,27 @@
 {% block messages %}{% endblock messages %}
     
 {% block content %}
+ {# Load custom filter for star rendering #}
 
-<div class="container">
+<div class="container container-custom">
     <h2 class="text-center mb-4">User Reviews</h2>
     <div class="reviews">
-        {% for review in reviews %}
+        {% for rating in ratings %}
         <div class="review-card">
-            <h4>{{ review.dish_name }}</h4>
-            <h5>{{ review.user_name }}</h5>
-            <p class="star-rating">{% for _ in range(review.rating) %}&#9733;{% endfor %}</p>
-            <p>{{ review.comment }}</p>
-            <small class="text-muted">Posted on {{ review.date }}</small>
+            <h4>{{ rating.recipe.title }}</h4>
+            <h5>Reviewed by: {{ rating.user.username }}</h5>
+            <p class="star-rating">
+                {% for _ in rating.rating|times %}★{% endfor %}
+            </p>
+            <p>{{ rating.review }}</p> 
+            <small class="text-muted">Posted on {{ rating.created_at|date:"F j, Y" }}</small>
         </div>
+        {% empty %}
+        <p>No reviews available for your recipes.</p>
         {% endfor %}
     </div>
 </div>
+
 
 {% endblock content %}
 

@@ -57,7 +57,8 @@
 
 <div class="container container-custom">
     <h2 class="text-center mb-4">Add Review & Rating</h2>
-    <form method="POST" action="/submit_review">
+    <form method="POST" action="{% url 'addreview_rating' recipe.id %}">
+        {% csrf_token %}
         <div class="mb-3">
             <label for="review" class="form-label">Your Review</label>
             <textarea class="form-control" id="review" name="review" rows="4" placeholder="Write your review here..." required></textarea>

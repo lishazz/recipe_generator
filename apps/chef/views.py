@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from apps.common.decorator import chef_required
 from .forms import RecipeForm,IngredientFormSet
-from apps.common.models import Recipe,Ingredient,RecipeIngredient
+from apps.common.models import Recipe,Ingredient,RecipeIngredient,Rating
 
 @login_required
 @chef_required
@@ -40,7 +40,13 @@ def create_recipe(request):
 @login_required
 @chef_required
 def view_review(request):
-    return render(request,'view_review.html')
+    # Get all recipes created by the logged-in chef
+    recipes = Recipe.objects.filter(created_by=request.user)
+
+    # Get reviews for those recipes
+    ratings = Rating.objects.filter(recipe__in=recipes)
+
+    return render(request, 'view_review.html', {"ratings": ratings})
 
 
 @login_required
@@ -65,17 +71,17 @@ def recipe_detail(request, recipe_id):
 @chef_required
 def edit_recipe(request, id):
     recipe = get_object_or_404(Recipe, id=id)
+    
     if request.method == "POST":
-        form = RecipeForm(request.POST, request.FILES)
+        form = RecipeForm(request.POST, request.FILES, instance=recipe)  # Use instance
         if form.is_valid():
-            recipe = form.save(commit=False)  # Don't save yet
-            recipe.created_by = request.user  # Assign the logged-in user
-            recipe.save()  # Now save with the user
-            return redirect("chef_dashboard")  # Redirect after successful save
+            form.save()  # No need to reassign created_by; it's already set
+            return redirect("chef_dashboard")
     else:
-        form = RecipeForm() 
+        form = RecipeForm(instance=recipe)  # Prepopulate form with recipe data
 
-    return render(request, 'edit_recipe.html', {'form': form})
+    return render(request, "edit_recipe.html", {"form": form, "recipe": recipe})
+
 
 @login_required
 @chef_required

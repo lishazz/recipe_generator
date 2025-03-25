@@ -97,9 +97,12 @@ class Rating(models.Model):
         validators=[MinValueValidator(1), MaxValueValidator(5)],
     )
     review = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('recipe', 'user')  # Prevent duplicate ratings
-
+        constraints = [
+            models.UniqueConstraint(fields=['recipe', 'user'], name='unique_user_recipe_rating')
+        ]
     def __str__(self):
         return f"{self.rating} stars for {self.recipe.title} by {self.user.username}"

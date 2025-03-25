@@ -108,38 +108,18 @@
     <h2 class="text-center mb-4">🔥 Top Rated Recipes</h2>
     <div class="row" id="recipeList">
         <!-- Recipe Card 1 -->
+        {% for recipe in recipe_list %}
         <div class="col-md-4">
             <div class="card recipe-card">
-                <img src="recipe1.jpg" class="card-img-top" alt="Recipe 1">
+                {% comment %} <img src="recipe1.jpg" class="card-img-top" alt="Recipe 1"> {% endcomment %}
                 <div class="card-body">
-                    <h5 class="card-title">Spaghetti Carbonara</h5>
-                    <p class="card-text">A creamy Italian pasta dish with crispy bacon.</p>
-                    <button class="btn btn-zom">View Recipe</button>
+                    <h5 class="card-title">{{recipe.title}}</h5>
+                    <p class="card-text" style="height:3rem; overflow:hidden">{{recipe.description}}</p>
+                    <a href="{% url 'user_view_recipe' recipe.id %}" class="btn btn-zom">View Recipe</a>
                 </div>
             </div>
         </div>
-        <!-- Recipe Card 2 -->
-        <div class="col-md-4">
-            <div class="card recipe-card">
-                <img src="recipe2.jpg" class="card-img-top" alt="Recipe 2">
-                <div class="card-body">
-                    <h5 class="card-title">Grilled Chicken Salad</h5>
-                    <p class="card-text">A healthy mix of grilled chicken and fresh veggies.</p>
-                    <button class="btn btn-zom">View Recipe</button>
-                </div>
-            </div>
-        </div>
-        <!-- Recipe Card 3 -->
-        <div class="col-md-4">
-            <div class="card recipe-card">
-                <img src="recipe3.jpg" class="card-img-top" alt="Recipe 3">
-                <div class="card-body">
-                    <h5 class="card-title">Chocolate Lava Cake</h5>
-                    <p class="card-text">A gooey and decadent dessert for chocolate lovers.</p>
-                    <button class="btn btn-zom">View Recipe</button>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
     </div>
 </section>
 
