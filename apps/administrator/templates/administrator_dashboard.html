@@ -61,9 +61,7 @@
 {% endblock style %}
 
 {% block navlinks %}
-<li class="nav-item">
-    <a class="nav-link" href="{% url 'administrator_dashboard' %}">Dashboard</a>
-</li>
+
 <li class="nav-item">
     <a class="nav-link" href="{% url 'approve_chef' %}">Manage Chef</a>
 </li>
@@ -83,7 +81,7 @@
 
 <section class="container mt-4">
     <div class="chart-container">
-        <h2 class="text-center">Trending Recipes</h2>
+        <h2 class="text-center">Generated Recipes:</h2>
         <canvas id="trendingChart"></canvas>
     </div>
     <div class="recipes-container">

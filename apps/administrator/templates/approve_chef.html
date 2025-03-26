@@ -39,38 +39,58 @@
 
 {% endblock style %}
 
-{% block navlinks %}{% endblock navlinks %}
+{% block navlinks %}
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'administrator_dashboard' %}">Dashboard</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'manage_user' %}">Manage User</a>
+</li>
+
+{% endblock navlinks %}
 
 
 {% block messages %}{% endblock messages %}
     
+
 {% block content %}
-
-<section class="container mt-4">
-    <div class="dashboard-header">
-        <h2>Pending Chef Approvals</h2>
-        <p>Review and approve chef registrations.</p>
-    </div>
-    <ul class="list-group" id="pending-chefs">
-        {% for chef in chefs %}
-            <li class="list-group-item">
-                👨‍🍳 {{ chef.username }}
-                <div class="btn-group">
-                    <form method="POST" action="{% url 'approve_chef' chef.id %}">
-                    {% csrf_token %}
-                    {% if chef.is_chef_approved %}
-                        <button class="btn btn-danger btn-sm" type="submit">Disable</button>
+<div class="container">
+    <h2 class="mt-4">Manage Chefs</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for chef in chefs %}
+            <tr>
+                <td>{{ chef.username }}</td>
+                <td>{{ chef.email }}</td>
+                <td>
+                    {% if chef.is_active %}
+                        <span class="badge text-primary">Active</span>
                     {% else %}
-                        <button class="btn btn-success btn-sm" type="submit">Approve</button>
+                        <span class="badge text-secondary">Disabled</span>
                     {% endif %}
-                    </form>
-                </div>
-            </li>
-        {% endfor %}
-
-    </ul>
-</section>
-
+               </td>
+                <td>
+                    <a href="{% url 'toggle_chef_status' chef.id %}" class="btn btn-warning">
+                        {% if chef.is_active %}Disable{% else %}Enable{% endif %}
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock content %}
+
+
+
 
 {% block script %}{% endblock script %}
