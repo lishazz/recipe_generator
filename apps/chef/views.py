@@ -90,3 +90,5 @@ def delete_recipe(request, id):
     if request.method == "POST":
         recipe.delete()
         return redirect('chef_dashboard')
+    
+

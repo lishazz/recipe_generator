@@ -8,11 +8,11 @@
 
 {% block navlinks %}
 
-<li class="nav-item">
+{% comment %} <li class="nav-item">
     <a class="nav-link" href="{% url "login_page" %}">Login</a>
-</li>
+</li> {% endcomment %}
 <li class="nav-item">
-    <a class="nav-link" href="{% url "register" %}">Register</a>
+    <a class="nav-link" href="{% url "register" %}">Sign Up</a>
 </li>
 
 
@@ -39,30 +39,30 @@
     <div class="row">
         <div class="col-md-4">
             <div class="card">
-                <img src="{% static 'images/about.png' %}" class="card-img-top" alt="Recipe 1">
+                <img src="{% static 'images/masaladosa.jpeg' %}" class="card-img-top" alt="Recipe 1">
                 <div class="card-body">
-                    <h5 class="card-title">Recipe Name</h5>
-                    <p class="card-text">A brief description of the recipe.</p>
+                    <h5 class="card-title">MASALA DOSA</h5>
+                    <p class="card-text">A crispy, golden crepe made from fermented rice and lentil batter, filled with a spiced potato mixture. Served hot with coconut chutney and sambar, it's a quintessential South Indian delight. </p>
                     <a href="#" class="btn btn-zom">View Recipe</a>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card">
-                <img src="recipe2.jpg" class="card-img-top" alt="Recipe 2">
+                <img src="{% static 'images/biriyani.jpeg' %}"class="card-img-top" alt="Recipe 2">
                 <div class="card-body">
-                    <h5 class="card-title">Recipe Name</h5>
-                    <p class="card-text">A brief description of the recipe.</p>
+                    <h5 class="card-title">CHICKEN BIRIYANI</h5>
+                    <p class="card-text">A flavorful rice dish made with fragrant basmati rice, marinated chicken, and a blend of aromatic spices. It's often garnished with fried onions, coriander, and mint, a celebratory dish enjoyed across India.</p>
                     <a href="#" class="btn btn-zom">View Recipe</a>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card">
-                <img src="recipe3.jpg" class="card-img-top" alt="Recipe 3">
+                <img src="{% static 'images/fruitsalad.jpeg' %}" class="card-img-top" alt="Recipe 3">
                 <div class="card-body">
-                    <h5 class="card-title">Recipe Name</h5>
-                    <p class="card-text">A brief description of the recipe.</p>
+                    <h5 class="card-title">FRUIT SALAD</h5>
+                    <p class="card-text">A refreshing mix of various fruits, often including melon, berries, and citrus, dressed with a light syrup or juice. Perfect as a healthy snack or dessert, it's a vibrant and naturally sweet treat.</p>
                     <a href="#" class="btn btn-zom">View Recipe</a>
                 </div>
             </div>
