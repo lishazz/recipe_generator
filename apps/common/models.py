@@ -10,6 +10,7 @@ class User(AbstractUser):
     role = models.CharField(max_length=20, choices=ROLES, default='default')
     registration_date = models.DateTimeField(auto_now_add=True)
     email = models.EmailField(unique=True)
+    is_chef_approved = models.BooleanField(default=False)
 
     # Explicit related_name to avoid clashes
     groups = models.ManyToManyField(

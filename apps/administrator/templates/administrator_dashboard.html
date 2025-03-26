@@ -10,16 +10,9 @@
         background-color: #f4f4f4;
         font-family: 'Poppins', sans-serif;
     }
-    .navbar {
-        background: linear-gradient(to right, #ffbb33, #ffbb33);
-        padding: 15px;
-    }
-    .navbar-brand {
-        font-weight: bold;
-        color: #fff !important;
-    }
+    
     .btn-custom {
-        background-color: #ffbb33;
+        background-color: #FC8019;
         color: #fff;
         border-radius: 25px;
         transition: 0.3s;
@@ -27,10 +20,10 @@
         font-weight: bold;
     }
     .btn-custom:hover {
-        background-color: #ff9900;
+        background-color: #FC8019;
     }
     .dashboard-header {
-        background: linear-gradient(to right, #ffbb33, #ffbb33);
+        background: linear-gradient(to right, #FC8019, #FC8019);
         color: #fff;
         padding: 20px;
         border-radius: 10px;
@@ -68,6 +61,18 @@
 {% endblock style %}
 
 {% block navlinks %}
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'administrator_dashboard' %}">Dashboard</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'approve_chef' %}">Manage Chef</a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'manage_user' %}">Manage User</a>
+</li>
+
+
 
 {% endblock navlinks %}
 

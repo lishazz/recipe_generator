@@ -10,27 +10,9 @@
         background-color: #f4f4f4;
         font-family: 'Poppins', sans-serif;
     }
-    .navbar {
-        background: linear-gradient(to right, #ffbb33, #ffdd33);
-        padding: 15px;
-    }
-    .navbar-brand {
-        font-weight: bold;
-        color: #fff !important;
-    }
-    .btn-custom {
-        background-color: #ffbb33;
-        color: #fff;
-        border-radius: 25px;
-        transition: 0.3s;
-        padding: 10px 20px;
-        font-weight: bold;
-    }
-    .btn-custom:hover {
-        background-color: #ffdd33;
-    }
+    
     .dashboard-header {
-        background: linear-gradient(to right, #ffdd33, #ffbb33);
+        background: linear-gradient(to right, #FC8019, #FC8019);
         color: #fff;
         padding: 20px;
         border-radius: 10px;
@@ -70,24 +52,22 @@
         <p>Review and approve chef registrations.</p>
     </div>
     <ul class="list-group" id="pending-chefs">
-        <li class="list-group-item">👨‍🍳 Chef Alex Johnson
-            <div class="btn-group">
-                <button class="btn btn-success btn-sm">Approve</button>
-                <button class="btn btn-danger btn-sm">Reject</button>
-            </div>
-        </li>
-        <li class="list-group-item">👨‍🍳 Chef Maria Lopez
-            <div class="btn-group">
-                <button class="btn btn-success btn-sm">Approve</button>
-                <button class="btn btn-danger btn-sm">Reject</button>
-            </div>
-        </li>
-        <li class="list-group-item">👨‍🍳 Chef David Smith
-            <div class="btn-group">
-                <button class="btn btn-success btn-sm">Approve</button>
-                <button class="btn btn-danger btn-sm">Reject</button>
-            </div>
-        </li>
+        {% for chef in chefs %}
+            <li class="list-group-item">
+                👨‍🍳 {{ chef.username }}
+                <div class="btn-group">
+                    <form method="POST" action="{% url 'approve_chef' chef.id %}">
+                    {% csrf_token %}
+                    {% if chef.is_chef_approved %}
+                        <button class="btn btn-danger btn-sm" type="submit">Disable</button>
+                    {% else %}
+                        <button class="btn btn-success btn-sm" type="submit">Approve</button>
+                    {% endif %}
+                    </form>
+                </div>
+            </li>
+        {% endfor %}
+
     </ul>
 </section>
 
