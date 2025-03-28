@@ -10,14 +10,7 @@
         background-color: #f4f4f4;
         font-family: 'Poppins', sans-serif;
     }
-    .navbar {
-        background: linear-gradient(to right, #ffbb33, #ffdd55);
-        padding: 15px;
-    }
-    .navbar-brand {
-        font-weight: bold;
-        color: #fff !important;
-    }
+    
     .btn-custom {
         background-color: #ffbb33;
         color: #fff;
@@ -75,37 +68,46 @@
 
 <section class="container mt-4">
     <div class="dashboard-header">
-        <h2>Manage Chefs & Users</h2>
-        <p>Enable, disable, or delete chefs and users.</p>
+        <h2>Manage  Users</h2>
+        <p>Enable, disable users.</p>
     </div>
-    <ul class="list-group" id="user-list">
-        <li class="list-group-item">👨‍🍳 Chef John Doe 
-            <div class="btn-group">
-                <button class="btn btn-warning btn-sm">Disable</button>
-                <button class="btn btn-danger btn-sm">Delete</button>
-            </div>
-        </li>
-        <li class="list-group-item">👤 User Jane Smith 
-            <div class="btn-group">
-                <button class="btn btn-success btn-sm">Enable</button>
-                <button class="btn btn-danger btn-sm">Delete</button>
-            </div>
-        </li>
-        <li class="list-group-item">👨‍🍳 Chef Marco Rossi 
-            <div class="btn-group">
-                <button class="btn btn-success btn-sm">Enable</button>
-                <button class="btn btn-danger btn-sm">Delete</button>
-            </div>
-        </li>
-        <li class="list-group-item">👤 User Emily Johnson 
-            <div class="btn-group">
-                <button class="btn btn-warning btn-sm">Disable</button>
-                <button class="btn btn-danger btn-sm">Delete</button>
-            </div>
-        </li>
-    </ul>
-</section>
-
-{% endblock content %}
+    <div class="container">
+        <h2 class="mt-4">Manage User</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        {% if user.is_active %}
+                            <span class="badge text-primary">Active</span>
+                        {% else %}
+                            <span class="badge text-secondary">Disabled</span>
+                        {% endif %}
+                   </td>
+                    <td>
+                        <a href="{% url 'toggle_user_status' user.id %}" class="btn btn-warning">
+                            {% if user.is_active %}
+                              Disable
+                            {% else %}
+                              Enable
+                            {% endif %}
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endblock content %}
 
 {% block script %}{% endblock script %}
