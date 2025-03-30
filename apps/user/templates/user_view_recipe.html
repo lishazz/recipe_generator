@@ -90,7 +90,13 @@
     
     <div class="d-flex justify-content-between">
         <a href="{% url 'generate_recipe' %}"class="btn w-50 me-2">Back to Recipe</a>
-        <a href="{% url 'favourite_recipe' %}"class="btn w-50 me-2">Add to favourite</an>
+        <a href="{% url 'toggle_favorite' recipe.id %}" class="btn w-50 me-2">
+            {% if recipe in user.favorite_recipes.all %}
+                Remove from Favorite
+            {% else %}
+                Add to Favorite
+            {% endif %}
+        </a>
         <a href="{% url 'addreview_rating' recipe.id%}"class="btn w-50">Add Review & Rating</a>
     </div>
 </div>

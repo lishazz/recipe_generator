@@ -107,3 +107,15 @@ class Rating(models.Model):
         ]
     def __str__(self):
         return f"{self.rating} stars for {self.recipe.title} by {self.user.username}"
+    
+
+class FavoriteRecipe(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="favorite_recipes")
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="favorited_by")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'recipe')  # Ensure a user cannot favorite the same recipe multiple times
+
+    def __str__(self):
+        return f"{self.user.username} favorited {self.recipe.title}"

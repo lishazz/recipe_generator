@@ -5,7 +5,7 @@ from .forms import IngredientForm
 from apps.aistudio.utils import generate
 from django.db import IntegrityError
 from titlecase import titlecase
-from apps.common.models import Recipe, GenerateRecipe, Ingredient, RecipeIngredient,Rating
+from apps.common.models import Recipe, GenerateRecipe, Ingredient, RecipeIngredient,Rating,FavoriteRecipe
 import json
 from django.contrib import messages
 
@@ -182,5 +182,19 @@ def user_view_recipe(request, recipe_id):
 
 @login_required
 @user_required
+def toggle_favorite(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    favorite, created = FavoriteRecipe.objects.get_or_create(user=request.user, recipe=recipe)
+
+    if not created:
+        favorite.delete()
+        messages.success(request, "Removed from favorites")
+    else:
+        messages.success(request, "Added to favorites")
+
+    return redirect('user_view_recipe', recipe_id=recipe.id)
+
+
 def favourite_recipe(request):
-    return render(request,'favourite_recipe.html')
+    favourite_recipes = Recipe.objects.all()  # Update with actual filtering logic
+    return render(request, 'favourite_recipe.html', {'favourite_recipes': favourite_recipes})
