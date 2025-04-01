@@ -89,7 +89,7 @@
             <p>{{recipe.cook_time}} min</p>
     
     <div class="d-flex justify-content-between">
-        <a href="{% url 'generate_recipe' %}"class="btn w-50 me-2">Back to Recipe</a>
+        <a href="{% url 'nutritional_info' recipe_id=recipe.id %}" class="btn w-30 me-2">Nutritional Info</a>
         <a href="{% url 'toggle_favorite' recipe.id %}" class="btn w-50 me-2">
             {% if recipe in user.favorite_recipes.all %}
                 Remove from Favorite

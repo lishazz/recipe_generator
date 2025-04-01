@@ -161,8 +161,34 @@ def generate_recipe(request):
 
 @login_required
 @user_required
-def nutritional_info(request):
-    return render(request,'nutritional_info.html')
+def nutritional_info(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    recipe_ingredients = RecipeIngredient.objects.filter(recipe=recipe)
+    
+    # Calculate total nutritional values
+    total_calories = 0
+    total_proteins = 0
+    total_carbs = 0
+    total_fats = 0
+    
+    for recipe_ingredient in recipe_ingredients:
+        # Get quantity in grams and multiply by per 100g values
+        quantity_factor = recipe_ingredient.quantity / 100
+        total_calories += recipe_ingredient.ingredient.calories_per_100g * quantity_factor
+        total_proteins += recipe_ingredient.ingredient.protein_per_100g * quantity_factor
+        total_carbs += recipe_ingredient.ingredient.carbs_per_100g * quantity_factor
+        total_fats += recipe_ingredient.ingredient.fats_per_100g * quantity_factor
+    
+    nutritional_info = {
+        'id': recipe.id,
+        'name': recipe.title,
+        'calories': round(total_calories, 2),
+        'proteins': round(total_proteins, 2),
+        'carbohydrates': round(total_carbs, 2),
+        'fats': round(total_fats, 2)
+    }
+    
+    return render(request, 'nutritional_info.html', {'recipe': nutritional_info})
 
 @login_required
 @user_required
