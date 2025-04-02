@@ -1,128 +1,153 @@
 {% extends "base.html" %}
 
-{% block title %}generate Recipe|RecipeGen{% endblock title %}
-
+{% block title %}Generate Recipe|RecipeGen{% endblock title %}
 
 {% block style %}
-
 <style>
-    
     .container-custom {
-        max-width: 600px;
+        max-width: 700px;
         margin-top: 50px;
         margin-bottom: 50px;
         background: #fff;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .page-header {
+        color: #2c3e50;
+        margin-bottom: 2rem;
+        position: relative;
+        padding-bottom: 15px;
+    }
+
+    .page-header:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background-color: #ffc107;
+    }
+    .form-container {
+        background: #f8f9fa;
         padding: 20px;
         border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
     }
 
-    .card {
-        margin-top: 15px;
+    .recipe-result {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 30px;
+    }
+
+    .ingredient-list {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .ingredient-item {
+        padding: 8px;
+        margin: 5px 0;
+        background: #fff;
+        border-radius: 5px;
+        border: 1px solid #dee2e6;
+    }
+
+    .instruction-list {
+        counter-reset: step-counter;
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .instruction-item {
+        position: relative;
+        padding: 10px 10px 10px 40px;
+        margin: 10px 0;
+        background: #fff;
+        border-radius: 5px;
+        border: 1px solid #dee2e6;
+    }
+
+    .instruction-item:before {
+        content: counter(step-counter);
+        counter-increment: step-counter;
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: #ffc107;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 24px;
+        font-weight: bold;
     }
 </style>
-
 {% endblock style %}
 
 {% block navlinks %}
-
     <li class="nav-item">
         <a class="nav-link" href="{% url 'user_dashboard' %}">Dashboard</a>
     </li>
-
     <li class="nav-item">
         <a class="nav-link" href="{% url 'favourite_recipe' %}">Favourite Recipe</a>
     </li>
-
     <li class="nav-item">
         <a class="nav-link" href="{% url 'user_settings' %}">Settings</a>
     </li>
-
 {% endblock navlinks %}
 
-
-{% block messages %}{% endblock messages %}
-    
 {% block content %}
-
-    <div class="container container-custom">
-        <h3 class="text-center mb-4">Search Recipes by Ingredients</h3>
-        {% comment %} <form method="POST">
-            <div class="mb-3">
-                <label for="search_ingredients" class="form-label">Enter Ingredients</label>
-                <input type="text" class="form-control" id="search_ingredients" name="search_ingredients" placeholder="e.g., tomato, cheese, basil">
-            </div>
-            <div class="d-flex justify-content-between">
-                <button type="submit" class="btn btn-zom w-50 me-2">Search Recipes</button>
-                <button type="reset" class="btn btn-zom w-50">Clear</button>
-            </div>
-        </form> {% endcomment %}
+<div class="container container-custom">
+    <h2 class="text-center page-header">Generate Recipe from Ingredients</h2>
+    
+    <div class="form-container">
         <form method="POST" id="recipeForm">
             {% csrf_token %}
             {{ form.as_p }}
-            <div class="d-flex justify-content-between">
-                <button type="submit" class="btn btn-zom w-100 me-2">Generate Recipe</button>
+            <div class="d-flex justify-content-center mt-4">
+                <button type="submit" class="btn btn-zom">
+                    <i class="fas fa-wand-magic-sparkles me-2"></i>Generate Recipe
+                </button>
             </div>
         </form>
-        
-        
-        
-        
-        {% if ingredients %}
-            <div>
-                <h2>Ingredients List:</h2>
-                <ul>
-                    {% for ingredient in ingredients %}
-                        <li>{{ ingredient }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
-        {% if title %}
-        <h2>
-            {{title}}
-        </h2>
-        {% endif %}
-        {% load markdownify %}
-        {% if instructions %}
-            <div>
-                <ol>
-                {% for step in instructions %}
-                <li> {{ step.content }}</li>
-            {% endfor %}
-                </ol>
-            </div>
-        {% endif %}
-
-
-
-        <div id="recipeResults" class="mt-4">
-            {% if recipes %}
-                <h4 class="text-center">Matching Recipes</h4>
-                <div class="row">
-                    {% for recipe in recipes %}
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ recipe.name }}</h5>
-                                    <p class="card-text">{{ recipe.description }}</p>
-                                    <div class="d-flex justify-content-between">
-                                        <button type="button" class="btn btn-zom w-50 me-2">View Recipe</button>
-                                        <button type="button" class="btn btn-zom w-50">Find Nutritional Info</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <p class="text-center text-muted">No recipes found.</p>
-            {% endif %}
-        </div>
     </div>
 
+    {% if title or ingredients or instructions %}
+        <div class="recipe-result">
+            {% if title %}
+                <h3 class="mb-4">{{ title }}</h3>
+            {% endif %}
+
+            {% if ingredients %}
+                <h4 class="mb-3">Ingredients:</h4>
+                <ul class="ingredient-list">
+                    {% for ingredient in ingredients %}
+                        <li class="ingredient-item">
+                            <i class="fas fa-utensils me-2"></i>{{ ingredient }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% load markdownify %}
+            {% if instructions %}
+                <h4 class="mb-3 mt-4">Instructions:</h4>
+                <ol class="instruction-list">
+                    {% for step in instructions %}
+                        <li class="instruction-item">{{ step.content }}</li>
+                    {% endfor %}
+                </ol>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
 {% endblock content %}
 
-{% block script %}
-
-{% endblock script %}
+{% block script %}{% endblock script %}

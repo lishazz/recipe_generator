@@ -2,105 +2,148 @@
 
 {% block title %}View Recipe|RecipeGen{% endblock title %}
 
-
 {% block style %}
-
 <style>
-   
     .container-custom {
-        max-width: 700px;
+        max-width: 800px;
         margin-top: 50px;
         background: #fff;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     }
-    .btn {
+    
+    .recipe-header {
+        color: #2c3e50;
+        margin-bottom: 2rem;
+        position: relative;
+        padding-bottom: 15px;
+    }
+    
+    .recipe-header:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
         background-color: #ffc107;
-        border: none;
-        color: #000;
     }
-    .btn:hover {
-        background-color: #e0a800;
+    
+    .ingredient-list {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
     }
+    
+    .ingredient-item {
+        padding: 8px;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .ingredient-item:last-child {
+        border-bottom: none;
+    }
+    
+    .category-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        background: #ffeeba;
+        color: #856404;
+        border-radius: 20px;
+        font-size: 0.9rem;
+    }
+    
+    .instruction-box {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .cooking-time {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 16px;
+        background: #e9ecef;
+        border-radius: 20px;
+        margin-bottom: 20px;
+    }
+
 </style>
-
 {% endblock style %}
-
 {% block navlinks %}
 
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'user_dashboard' %}">Dashboard</a>
+</li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'user_dashboard' %}">Dashboard</a>
-    </li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'generate_recipe' %}">Generate Recipe</a>
+</li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'generate_recipe' %}">Generate recipe</a>
-    </li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'favourite_recipe' %}">Favourite Recipe</a>
+</li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'favourite_recipe' %}">Favourite Recipe</a>
-    </li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'user_settings' %}">Settings</a>
+</li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'user_settings' %}">Settings</a>
-    </li>
 
 {% endblock navlinks %}
 
-
-{% block messages %}{% endblock messages %}
-    
 {% block content %}
-
-
-    {% comment %} <h4>Instructions:</h4>
-    <p></p>
-</div> {% endcomment %}
-
-
-
 <div class="container container-custom">
-    <h2 class="text-center mb-4">{{ recipe.title }}</h2>
-    <p class="text-muted text-center">{{ recipe.description }}</p>
+    <h2 class="text-center recipe-header">{{ recipe.title }}</h2>
+    <p class="text-muted text-center mb-4">{{ recipe.description }}</p>
     
-    <h4>Ingredients:</h4>
-    <ul class="list-group mb-4">
-        {% for item in ingredients %}
-            <li>{{ item.ingredient.name }} - {{ item.quantity }} g</li>
-        {% endfor %}
-    </ul>
-
-    <h4>Category</h4>
-        <div>
-            <p>{{recipe.category}}</p>
-        </div>
-
-    <h4>Step-by-Step Instructions:</h4>
-   
-            <div>
-                <ul>
-            
-                <li> {{ recipe.instruction }}</li>
-
-                </ul>
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h4 class="mb-3">Ingredients</h4>
+            <div class="ingredient-list">
+                {% for item in ingredients %}
+                    <div class="ingredient-item">
+                        {{ item.ingredient.name }} - {{ item.quantity }}g
+                    </div>
+                {% endfor %}
             </div>
-    <h4>Cooking Time: </h4>
-            <p>{{recipe.cook_time}} min</p>
+        </div>
+        
+        <div class="col-md-6">
+            <h4 class="mb-3">Details</h4>
+            <div class="mb-3">
+                <span class="category-badge">{{ recipe.category }}</span>
+            </div>
+            <div class="cooking-time">
+                <i class="fas fa-clock me-2"></i>
+                {{ recipe.cook_time }} minutes
+            </div>
+        </div>
+    </div>
+
+    <h4 class="mb-3">Instructions</h4>
+    <div class="instruction-box">
+        {{ recipe.instruction|linebreaks }}
+    </div>
     
-    <div class="d-flex justify-content-between">
-        <a href="{% url 'nutritional_info' recipe_id=recipe.id %}" class="btn w-30 me-2">Nutritional Info</a>
-        <a href="{% url 'toggle_favorite' recipe.id %}" class="btn w-50 me-2">
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{% url 'nutritional_info' recipe_id=recipe.id %}" class="btn btn-zom">
+            <i class="fas fa-chart-pie me-2"></i>Nutritional Info
+        </a>
+        <a href="{% url 'toggle_favorite' recipe.id %}" class="btn btn-zom">
+            <i class="{% if recipe in user.favorite_recipes.all %}fas fa-heart{% else %}far fa-heart{% endif %} me-2"></i>
             {% if recipe in user.favorite_recipes.all %}
-                Remove from Favorite
+                Remove Favorite
             {% else %}
-                Add to Favorite
+                Add Favorite
             {% endif %}
         </a>
-        <a href="{% url 'addreview_rating' recipe.id%}"class="btn w-50">Add Review & Rating</a>
+        <a href="{% url 'addreview_rating' recipe.id %}" class="btn btn-zom">
+            <i class="far fa-star me-2"></i>Rate & Review
+        </a>
     </div>
 </div>
-
 {% endblock content %}
-
-{% block script %}{% endblock script %}
