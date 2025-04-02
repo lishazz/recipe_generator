@@ -59,6 +59,37 @@
 </style>
 {% endblock style %}
 
+{% block navlinks %}
+
+<li class="nav-item">
+    <a class="nav-link d-flex align-items-center" href="{% url 'user_dashboard' %}">
+        <i class="fas fa-home me-2"></i>
+        <span>Dashboard</span>
+    </a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link d-flex align-items-center" href="{% url 'generate_recipe' %}">
+        <i class="fas fa-wand-magic-sparkles me-2"></i>
+        <span>Generate Recipe</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link d-flex align-items-center" href="{% url 'favourite_recipe' %}">
+        <i class="fas fa-heart me-2"></i>
+        <span>Favorites</span>
+    </a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link d-flex align-items-center" href="{% url 'user_settings' %}">
+        <i class="fas fa-cog me-2"></i>
+        <span>Settings</span>
+    </a>
+</li>
+
+{% endblock navlinks %}
+
 {% block content %}
 <div class="container container-custom">
     <h2 class="text-center nutrition-header">Nutritional Information for {{ recipe.name }}</h2>

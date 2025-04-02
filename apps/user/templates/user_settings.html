@@ -35,15 +35,24 @@
 {% block navlinks %}
 
 <li class="nav-item">
-    <a class="nav-link" href="{% url 'user_dashboard' %}">Dashboard</a>
+    <a class="nav-link d-flex align-items-center" href="{% url 'user_dashboard' %}">
+        <i class="fas fa-home me-2"></i>
+        <span>Dashboard</span>
+    </a>
 </li>
 
 <li class="nav-item">
-    <a class="nav-link" href="{% url 'generate_recipe' %}">Generate Recipe</a>
+    <a class="nav-link d-flex align-items-center" href="{% url 'generate_recipe' %}">
+        <i class="fas fa-wand-magic-sparkles me-2"></i>
+        <span>Generate Recipe</span>
+    </a>
 </li>
 
 <li class="nav-item">
-    <a class="nav-link" href="{% url 'favourite_recipe' %}">Favourite Recipe</a>
+    <a class="nav-link d-flex align-items-center" href="{% url 'favourite_recipe' %}">
+        <i class="fas fa-heart me-2"></i>
+        <span>Favorites</span>
+    </a>
 </li>
 
 
