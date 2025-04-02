@@ -93,13 +93,19 @@
 
 {% block navlinks %}
     <li class="nav-item">
-        <a class="nav-link" href="{% url 'user_dashboard' %}">Dashboard</a>
+        <a class="nav-link" href="{% url 'user_dashboard' %}">
+            <i class="fas fa-home me-2"></i>Dashboard
+        </a>    
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="{% url 'favourite_recipe' %}">Favourite Recipe</a>
+        <a class="nav-link" href="{% url 'favourite_recipe' %}">
+            <i class="fas fa-heart me-2"></i>Favourite Recipe
+        </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="{% url 'user_settings' %}">Settings</a>
+        <a class="nav-link" href="{% url 'user_settings' %}">
+            <i class="fas fa-cog me-2"></i>Settings
+        </a>
     </li>
 {% endblock navlinks %}
 
