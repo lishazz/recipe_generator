@@ -1,13 +1,14 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from apps.common.decorator import user_required
-from .forms import IngredientForm
+from .forms import IngredientForm, UserSettingsForm
 from apps.aistudio.utils import generate
 from django.db import IntegrityError
 from titlecase import titlecase
 from apps.common.models import Recipe, GenerateRecipe, Ingredient, RecipeIngredient,Rating,FavoriteRecipe
 import json
 from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
 
 @login_required
 @user_required
@@ -193,7 +194,32 @@ def nutritional_info(request, recipe_id):
 @login_required
 @user_required
 def user_settings(request):
-    return render(request,'user_settings.html')
+    if request.method == 'POST':
+        form = UserSettingsForm(request.POST, instance=request.user)
+        if form.is_valid():
+            current_password = form.cleaned_data['current_password']
+            new_password = form.cleaned_data['new_password']
+
+            # Verify current password
+            if not request.user.check_password(current_password):
+                messages.error(request, 'Current password is incorrect')
+                return render(request, 'user_settings.html', {'form': form})
+
+            # Save email changes
+            user = form.save(commit=False)
+            
+            # Update password if provided
+            if new_password:
+                user.set_password(new_password)
+                update_session_auth_hash(request, user)  # Keep user logged in
+            
+            user.save()
+            messages.success(request, 'Your settings have been updated successfully')
+            return redirect('user_dashboard')
+    else:
+        form = UserSettingsForm(instance=request.user)
+    
+    return render(request, 'user_settings.html', {'form': form})
 
 @login_required
 @user_required
