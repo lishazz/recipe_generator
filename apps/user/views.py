@@ -5,7 +5,7 @@ from .forms import IngredientForm, UserSettingsForm
 from apps.aistudio.utils import generate
 from django.db import IntegrityError
 from titlecase import titlecase
-from apps.common.models import Recipe, GenerateRecipe, Ingredient, RecipeIngredient,Rating,FavoriteRecipe
+from apps.common.models import User, Recipe, GenerateRecipe, Ingredient, RecipeIngredient,Rating,FavoriteRecipe
 import json
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
@@ -295,3 +295,39 @@ def toggle_favorite(request, recipe_id):
 def favourite_recipe(request):
     favourite_recipes = Recipe.objects.all()  # Update with actual filtering logic
     return render(request, 'favourite_recipe.html', {'favourite_recipes': favourite_recipes})
+
+def chef_details(request, user_id=None):
+    if user_id:
+        # Show single chef details
+        chef = get_object_or_404(User.objects.annotate(
+            recipe_count=models.Count('recipe', filter=models.Q(recipe__ai_generated=False)),
+            avg_rating=models.Avg('recipe__ratings__rating', filter=models.Q(recipe__ai_generated=False))
+        ), id=user_id)
+        
+        recipes = Recipe.objects.filter(
+            created_by=chef,
+            ai_generated=False
+        ).annotate(
+            avg_rating=models.Avg('ratings__rating')
+        )
+        
+        context = {
+            'chef': chef,
+            'recipes': recipes,
+            'single_chef': True
+        }
+    else:
+        # Show all chefs list
+        chefs = User.objects.filter(
+            recipe__ai_generated=False
+        ).distinct().annotate(
+            recipe_count=models.Count('recipe', filter=models.Q(recipe__ai_generated=False)),
+            avg_rating=models.Avg('recipe__ratings__rating', filter=models.Q(recipe__ai_generated=False))
+        )
+        
+        context = {
+                        'chefs': chefs,
+            'single_chef': False
+        }
+    
+    return render(request, 'chef_details.html', context)

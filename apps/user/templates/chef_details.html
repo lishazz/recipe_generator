@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if single_chef %}
+        {{ chef.username }}'s Profile | RecipeGen
+    {% else %}
+        Our Talented Chefs | RecipeGen
+    {% endif %}
+{% endblock title %}
+
+{% block navlinks %}
+
+<li class="nav-item">
+    <a class="nav-link d-flex align-items-center" href="{% url 'user_dashboard' %}">
+        <i class="fas fa-home me-2"></i>
+        <span>Dashboard</span>
+    </a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link d-flex align-items-center" href="{% url 'generate_recipe' %}">
+        <i class="fas fa-wand-magic-sparkles me-2"></i>
+        <span>Generate Recipe</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link d-flex align-items-center" href="{% url 'favourite_recipe' %}">
+        <i class="fas fa-heart me-2"></i>
+        <span>Favorites</span>
+    </a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link d-flex align-items-center" href="{% url 'user_settings' %}">
+        <i class="fas fa-cog me-2"></i>
+        <span>Settings</span>
+    </a>
+</li>
+
+{% endblock navlinks %}
+
+{% block content %}
+<div class="container mt-5">
+    {% if single_chef %}
+        <!-- Single Chef View -->
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title">{{ chef.username }}'s Profile</h2>
+                        <div class="chef-stats mb-4">
+                            <p><strong>Email:</strong> {{ chef.email }}</p>
+                            <p><strong>Recipes Created:</strong> {{ chef.recipe_count }}</p>
+                            {% if chef.avg_rating %}
+                                <p><strong>Average Rating:</strong> {{ chef.avg_rating|floatformat:1 }} / 5.0</p>
+                            {% endif %}
+                        </div>
+                        <h3>Recipes by {{ chef.username }}</h3>
+                        <div class="row">
+                            {% for recipe in recipes %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ recipe.title }}</h5>
+                                            <p class="card-text">{{ recipe.description|truncatewords:20 }}</p>
+                                            <a href="{% url 'user_view_recipe' recipe.id %}" class="btn btn-zom">
+                                                View Recipe
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <div class="col-12">
+                                    <p>No recipes available.</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <!-- Chefs List View -->
+        <h2 class="text-center mb-4">Our Talented Chefs</h2>
+        <div class="row">
+            {% for chef in chefs %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ chef.username }}</h5>
+                        <p class="card-text">
+                            <strong>Recipes Created:</strong> {{ chef.recipe_count }}<br>
+                            {% if chef.avg_rating %}
+                            <strong>Average Rating:</strong> {{ chef.avg_rating|floatformat:1 }} / 5.0
+                            {% else %}
+                            <strong>Average Rating:</strong> No ratings yet
+                            {% endif %}
+                        </p>
+                        <div class="mt-3">
+                            <a href="{% url 'chef_detail' chef.id %}" class="btn btn-primary">
+                                View Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p>No chefs found at the moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock content %}
+
+{% block style %}
+<style>
+    .card {
+        transition: transform 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .chef-stats {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+</style>
+{% endblock style %}

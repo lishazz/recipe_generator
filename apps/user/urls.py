@@ -13,4 +13,6 @@ urlpatterns = [
     path("recipe/<int:recipe_id>/", views.user_view_recipe, name='user_view_recipe'),
     path('recipe/<int:recipe_id>/favorite/', views.toggle_favorite, name='toggle_favorite'),
     path('search/', views.search_recipe, name='search_recipe'),
+    path('chef_details/', views.chef_details, name='chef_details'),  # List all chefs
+    path('chef_details/<int:user_id>/', views.chef_details, name='chef_detail'),  # Individual chef
 ]
