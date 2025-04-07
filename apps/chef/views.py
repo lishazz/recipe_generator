@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from apps.common.decorator import chef_required
 from .forms import RecipeForm,IngredientFormSet
-from apps.common.models import Recipe,Ingredient,RecipeIngredient,Rating
+from apps.common.models import Recipe,Ingredient,RecipeIngredient,Rating,ReviewReply
 from django.db import models
 from django.core.serializers.json import DjangoJSONEncoder
 import json
@@ -111,4 +111,16 @@ def delete_recipe(request, id):
         recipe.delete()
         return redirect('chef_dashboard')
     
-
+@login_required
+@chef_required
+def add_review_reply(request, rating_id):
+    rating = get_object_or_404(Rating, id=rating_id)
+    if request.method == "POST":
+        reply_text = request.POST.get('reply_text')
+        if reply_text:
+            ReviewReply.objects.create(
+                rating=rating,
+                chef=request.user,
+                reply_text=reply_text
+            )
+    return redirect('view_review')

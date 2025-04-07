@@ -119,3 +119,12 @@ class FavoriteRecipe(models.Model):
 
     def __str__(self):
         return f"{self.user.username} favorited {self.recipe.title}"
+
+class ReviewReply(models.Model):
+    rating = models.ForeignKey(Rating, on_delete=models.CASCADE, related_name='replies')
+    chef = models.ForeignKey(User, on_delete=models.CASCADE)
+    reply_text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']

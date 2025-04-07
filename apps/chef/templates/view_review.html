@@ -27,6 +27,20 @@
     .star-rating {
         color: #ffc107;
     }
+    .reply-section {
+        margin-left: 20px;
+        padding: 10px;
+        border-left: 3px solid #ddd;
+    }
+    .reply-form {
+        margin-top: 10px;
+    }
+    .reply-card {
+        background: #f8f9fa;
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 5px;
+    }
 </style>
 
 {% endblock style %}
@@ -51,8 +65,6 @@
 {% block messages %}{% endblock messages %}
     
 {% block content %}
- {# Load custom filter for star rendering #}
-
 <div class="container container-custom">
     <h2 class="text-center mb-4">User Reviews</h2>
     <div class="reviews">
@@ -65,6 +77,25 @@
             </p>
             <p>{{ rating.review }}</p> 
             <small class="text-muted">Posted on {{ rating.created_at|date:"F j, Y" }}</small>
+
+            <!-- Replies Section -->
+            <div class="reply-section">
+                {% for reply in rating.replies.all %}
+                <div class="reply-card">
+                    <p>{{ reply.reply_text }}</p>
+                    <small class="text-muted">Replied by {{ reply.chef.username }} on {{ reply.created_at|date:"F j, Y" }}</small>
+                </div>
+                {% endfor %}
+
+                <!-- Reply Form -->
+                <form class="reply-form" method="post" action="{% url 'add_review_reply' rating.id %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <textarea class="form-control" name="reply_text" rows="2" placeholder="Write your reply..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-primary mt-2">Reply</button>
+                </form>
+            </div>
         </div>
         {% empty %}
         <p>No reviews available for your recipes.</p>
