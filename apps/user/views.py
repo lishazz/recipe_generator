@@ -269,10 +269,12 @@ def user_settings(request):
 def user_view_recipe(request, recipe_id):
     recipe = Recipe.objects.get(id=recipe_id)
     ingredients = RecipeIngredient.objects.filter(recipe=recipe)
+    ratings = Rating.objects.filter(recipe=recipe).prefetch_related('replies').order_by('-created_at')
 
     return render(request, "user_view_recipe.html", {
         "recipe": recipe,
-        "ingredients": ingredients
+        "ingredients": ingredients,
+        "ratings": ratings
     })
 
 @login_required

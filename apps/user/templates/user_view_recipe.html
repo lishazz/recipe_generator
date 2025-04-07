@@ -12,7 +12,7 @@
         border-radius: 15px;
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     }
-    
+
     .recipe-header {
         color: #2c3e50;
         margin-bottom: 2rem;
@@ -72,6 +72,49 @@
         margin-bottom: 20px;
     }
 
+    .recipe-stats {
+        display: flex;
+        justify-content: space-around;
+        margin: 20px 0;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+
+    .review-card {
+        transition: transform 0.2s;
+    }
+
+    .review-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .chef-reply {
+        border-left: 3px solid #ffc107;
+    }
+
+    .btn-zom {
+        transition: all 0.3s ease;
+    }
+
+    .btn-zom:hover {
+        transform: scale(1.05);
+    }
 </style>
 {% endblock style %}
 {% block navlinks %}
@@ -106,54 +149,97 @@
 {% endblock navlinks %}
 
 {% block content %}
+
 <div class="container container-custom">
     <h2 class="text-center recipe-header">{{ recipe.title }}</h2>
     <p class="text-muted text-center mb-4">{{ recipe.description }}</p>
     
+    <div class="recipe-stats">
+        <div class="stat-item">
+            <div class="stat-value">{{ recipe.cook_time }}</div>
+            <div class="stat-label">Minutes</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">{{ ingredients|length }}</div>
+            <div class="stat-label">Ingredients</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">{{ recipe.category }}</div>
+            <div class="stat-label">Category</div>
+        </div>
+    </div>
+
     <div class="row mb-4">
         <div class="col-md-6">
             <h4 class="mb-3">Ingredients</h4>
             <div class="ingredient-list">
                 {% for item in ingredients %}
-                    <div class="ingredient-item">
-                        {{ item.ingredient.name }} - {{ item.quantity }}g
+                    <div class="ingredient-item d-flex justify-content-between align-items-center">
+                        <span>{{ item.ingredient.name }}</span>
+                        <span class="badge bg-light text-dark">{{ item.quantity }}g</span>
                     </div>
                 {% endfor %}
             </div>
         </div>
         
         <div class="col-md-6">
-            <h4 class="mb-3">Details</h4>
-            <div class="mb-3">
-                <span class="category-badge">{{ recipe.category }}</span>
-            </div>
-            <div class="cooking-time">
-                <i class="fas fa-clock me-2"></i>
-                {{ recipe.cook_time }} minutes
+            <h4 class="mb-3">Instructions</h4>
+            <div class="instruction-box">
+                {{ recipe.instruction|linebreaks }}
             </div>
         </div>
     </div>
-
-    <h4 class="mb-3">Instructions</h4>
-    <div class="instruction-box">
-        {{ recipe.instruction|linebreaks }}
-    </div>
     
     <div class="d-flex justify-content-between mt-4">
-        <a href="{% url 'nutritional_info' recipe_id=recipe.id %}" class="btn btn-zom">
+        <a href="{% url 'nutritional_info' recipe_id=recipe.id %}" class="btn btn-zom btn-outline-primary">
             <i class="fas fa-chart-pie me-2"></i>Nutritional Info
         </a>
-        <a href="{% url 'toggle_favorite' recipe.id %}" class="btn btn-zom">
-            <i class="{% if recipe in user.favorite_recipes.all %}fas fa-heart{% else %}far fa-heart{% endif %} me-2"></i>
+        <a href="{% url 'toggle_favorite' recipe.id %}" class="btn btn-zom {% if recipe in user.favorite_recipes.all %}btn-danger{% else %}btn-outline-danger{% endif %}">
+            <i class="{% if recipe in user.favorite_recipes.all %}fas{% else %}far{% endif %} fa-heart me-2"></i>
             {% if recipe in user.favorite_recipes.all %}
                 Remove Favorite
             {% else %}
                 Add Favorite
             {% endif %}
         </a>
-        <a href="{% url 'addreview_rating' recipe.id %}" class="btn btn-zom">
+        <a href="{% url 'addreview_rating' recipe.id %}" class="btn btn-zom btn-outline-warning">
             <i class="far fa-star me-2"></i>Rate & Review
         </a>
     </div>
+</div>
+
+<div class="container container-custom mt-4">
+    <h3 class="mb-4">Reviews and Ratings</h3>
+    {% for rating in ratings %}
+    <div class="review-card mb-4">
+        <div class="review-content p-3 border rounded shadow-sm">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-user-circle fs-4 me-2"></i>
+                    <h5 class="mb-0">{{ rating.user.username }}</h5>
+                </div>
+                <small class="text-muted">{{ rating.created_at|date:"F j, Y" }}</small>
+            </div>
+            <p class="mt-3 mb-2">{{ rating.review }}</p>
+
+            {% if rating.replies.all %}
+            <div class="replies-section mt-3">
+                <h6 class="text-muted mb-2">Chef's Responses:</h6>
+                {% for reply in rating.replies.all %}
+                <div class="chef-reply p-3 mb-2 bg-light rounded">
+                    <p class="mb-1">{{ reply.reply_text }}</p>
+                    <small class="text-muted">- Chef {{ reply.chef.username }} on {{ reply.created_at|date:"F j, Y" }}</small>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <div class="text-center p-4">
+        <i class="far fa-comment-dots fs-1 text-muted mb-3"></i>
+        <p class="text-muted">No reviews yet. Be the first to review!</p>
+    </div>
+    {% endfor %}
 </div>
 {% endblock content %}
