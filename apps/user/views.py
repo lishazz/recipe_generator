@@ -14,9 +14,14 @@ from django.db import models
 @login_required
 @user_required
 def user_dashboard(request):
-    recipe_list = Recipe.objects.all()
+    recipe_list = Recipe.objects.annotate(
+        avg_rating=models.Avg('ratings__rating')
+    ).order_by('-avg_rating')  
+    chef_recipes = Recipe.objects.filter(ai_generated=False)
+    
     context = {
-        "recipe_list":recipe_list
+        "recipe_list":recipe_list,
+        "chef_recipes": chef_recipes
     }
     return render(request,'user_dashboard.html', context)
 
@@ -26,19 +31,33 @@ def search_recipe(request):
     if request.method == "POST":
         search_query = request.POST.get('search_query', '').strip()
         if search_query:
-            # Search in title, description, and category
+            # Search in title, description, and category with rating annotation
             recipe_list = Recipe.objects.filter(
                 models.Q(title__icontains=search_query) |
                 models.Q(description__icontains=search_query) |
                 models.Q(category__icontains=search_query) 
-            ).distinct()
+            ).annotate(
+                avg_rating=models.Avg('ratings__rating')
+            ).order_by('-avg_rating')
         else:
-            recipe_list = Recipe.objects.all()
+            # If no search query, return all recipes ordered by rating
+            recipe_list = Recipe.objects.annotate(
+                avg_rating=models.Avg('ratings__rating')
+            ).order_by('-avg_rating')
     else:
-        recipe_list = Recipe.objects.all()
+        # For GET requests, show all recipes ordered by rating
+        recipe_list = Recipe.objects.annotate(
+            avg_rating=models.Avg('ratings__rating')
+        ).order_by('-avg_rating')
+
+    # Split recipes into chef and AI-generated categories
+    chef_recipes = recipe_list.filter(ai_generated=False)
+    ai_recipes = recipe_list.filter(ai_generated=True)
 
     context = {
-        "search_recipe_list": recipe_list
+        "chef_recipes": chef_recipes,
+        "recipe_list": ai_recipes,
+        "search_query": search_query if request.method == "POST" else ""
     }
     return render(request, 'user_dashboard.html', context)
 
