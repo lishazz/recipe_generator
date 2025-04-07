@@ -184,19 +184,6 @@
         <h2>Your Favourite Recipes</h2>
     </div>
     
-    <div class="filter-section">
-        <div class="row">
-            <div class="col-md-4 mb-2">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search recipes..." id="searchRecipes">
-                    <button class="btn btn-zom" type="button" id="searchButton">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
     {% if user.favorite_recipes.all %}
     <div class="row">
         {% for favorite in user.favorite_recipes.all %}
