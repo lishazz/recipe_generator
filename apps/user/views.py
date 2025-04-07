@@ -9,6 +9,7 @@ from apps.common.models import Recipe, GenerateRecipe, Ingredient, RecipeIngredi
 import json
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
+from django.db import models
 
 @login_required
 @user_required
@@ -18,6 +19,29 @@ def user_dashboard(request):
         "recipe_list":recipe_list
     }
     return render(request,'user_dashboard.html', context)
+
+@login_required
+@user_required
+def search_recipe(request):
+    if request.method == "POST":
+        search_query = request.POST.get('search_query', '').strip()
+        if search_query:
+            # Search in title, description, and category
+            recipe_list = Recipe.objects.filter(
+                models.Q(title__icontains=search_query) |
+                models.Q(description__icontains=search_query) |
+                models.Q(category__icontains=search_query) 
+            ).distinct()
+        else:
+            recipe_list = Recipe.objects.all()
+    else:
+        recipe_list = Recipe.objects.all()
+
+    context = {
+        "search_recipe_list": recipe_list
+    }
+    return render(request, 'user_dashboard.html', context)
+
 
 @login_required
 def addreview_rating(request, recipe_id):  # Expect recipe_id as a parameter

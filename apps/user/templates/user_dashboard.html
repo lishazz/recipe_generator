@@ -103,11 +103,16 @@
 
 <!-- Search Bar -->
 <section class="container my-4">
-    <div class="search-container">
-        <input type="text" id="searchInput" class="form-control" placeholder="Search for recipes...">
-        <button onclick="searchRecipes()"><i class="bi bi-search"></i> Search</button>
-    </div>
+    <form class="search-container" method="post" action="{% url 'search_recipe' %}">
+        {% csrf_token %}
+        <input type="text" id="searchInput" name="search_query" class="form-control" placeholder="Search for recipes...">
+        <button type="submit" class="btn">
+            <i class="bi bi-search"></i> Search
+        </button>
+    </form>
 </section>
+
+{% if recipe_list %}
 <section class="container my-5">
     <h2 class="text-center mb-4">🔥 Top Rated Recipes</h2>
     <div class="row" id="recipeList">
@@ -126,6 +131,28 @@
         {% endfor %}
     </div>
 </section>
+{% endif %}
+
+{% if search_recipe_list %}
+<section class="container my-5">
+    <h2 class="text-center mb-4">Search Results</h2>
+    <div class="row" id="recipeList">
+        <!-- Recipe Card 1 -->
+        {% for recipe in search_recipe_list %}
+        <div class="col-md-4">
+            <div class="card recipe-card">
+                {% comment %} <img src="recipe1.jpg" class="card-img-top" alt="Recipe 1"> {% endcomment %}
+                <div class="card-body">
+                    <h5 class="card-title">{{recipe.title}}</h5>
+                    <p class="card-text" style="height:3rem; overflow:hidden">{{recipe.description}}</p>
+                    <a href="{% url 'user_view_recipe' recipe.id %}" class="btn btn-zom">View Recipe</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
 
 {% endblock content %}
 
