@@ -3,11 +3,31 @@ from django.contrib.auth.decorators import login_required
 from apps.common.decorator import chef_required
 from .forms import RecipeForm,IngredientFormSet
 from apps.common.models import Recipe,Ingredient,RecipeIngredient,Rating
+from django.db import models
+from django.core.serializers.json import DjangoJSONEncoder
+import json
 
 @login_required
 @chef_required
 def chef_dashboard(request):
-    return render(request, "chef_dashboard.html")
+    chef_recipes = Recipe.objects.filter(created_by=request.user).annotate(
+        avg_rating=models.Avg('ratings__rating')
+    ).values('title', 'avg_rating')
+    
+    # Convert to list and handle None values
+    recipes_data = [
+        {
+            'title': recipe['title'],
+            'avg_rating': float(recipe['avg_rating']) if recipe['avg_rating'] else 0
+        }
+        for recipe in chef_recipes
+    ]
+    
+    context = {
+        'user': request.user,
+        'chef_recipes': json.dumps(recipes_data, cls=DjangoJSONEncoder)
+    }
+    return render(request, 'chef_dashboard.html', context)
 
 @login_required
 @chef_required

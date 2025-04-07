@@ -27,6 +27,10 @@
         padding: 20px;
         border-radius: 10px;
     }
+    .dashboard-card canvas {
+        max-height: 400px;
+        width: 100%;
+    }
 </style>
 
 {% endblock style %}
@@ -61,13 +65,19 @@
     </div>
 </section>
 
-<!-- Search Bar -->
-<section class="container my-4">
-    <div class="input-group">
-        <input type="text" id="searchInput" class="form-control" placeholder="Search recipes...">
-        <button class="btn btn-zom" onclick="searchRecipes()">Search</button>
+<!-- Recipe Statistics Chart -->
+<section class="container my-5">
+    <div class="card dashboard-card p-4">
+        <h4 class="text-center mb-4">Recipe Ratings Overview</h4>
+        <div style="height: 300px; width: 80%; margin: 0 auto;">
+            <canvas id="recipeRatingsChart"></canvas>
+        </div>
     </div>
 </section>
+
+
+
+
 
 <!-- Dashboard Sections -->
 <section class="container my-5">
@@ -100,4 +110,63 @@
 
 {% endblock content %}
 
-{% block script %}{% endblock script %}
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        try {
+            const ctx = document.getElementById('recipeRatingsChart').getContext('2d');
+            const recipes = JSON.parse('{{ chef_recipes|safe }}');
+            
+            if (recipes.length === 0) {
+                ctx.font = '16px Arial';
+                ctx.fillText('No recipes available', 150, 150);
+                return;
+            }
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: recipes.map(recipe => recipe.title),
+                    datasets: [{
+                        label: 'Average Rating',
+                        data: recipes.map(recipe => recipe.avg_rating),
+                        backgroundColor: '#FC8019',  // Changed to green
+                        borderColor: '#FC8019s',      // Darker green border
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 5,
+                            grid: {
+                                color: '#f0f0f0'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+        } catch (error) {
+            console.error('Error creating chart:', error);
+        }
+    });
+</script>
+{% endblock script %}
