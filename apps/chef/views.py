@@ -25,7 +25,8 @@ def chef_dashboard(request):
     
     context = {
         'user': request.user,
-        'chef_recipes': json.dumps(recipes_data, cls=DjangoJSONEncoder)
+        'chef_recipes': json.dumps(recipes_data, cls=DjangoJSONEncoder),
+        
     }
     return render(request, 'chef_dashboard.html', context)
 

@@ -31,6 +31,19 @@
         max-height: 400px;
         width: 100%;
     }
+
+    .text-primary {
+        color: #FC8019 !important;
+    }
+    .display-4 {
+        font-size: 2.5rem;
+        margin: 1rem 0;
+    }
+    .card-title {
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
 </style>
 
 {% endblock style %}
@@ -62,6 +75,27 @@
     <div class="dashboard-header text-center">
         <h1>Welcome, {{user.username}}</h1>
         <p>Manage your recipes and view user feedback.</p>
+    </div>
+</section>
+
+<!-- Recipe Statistics Chart -->
+<section class="container my-5">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card dashboard-card">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Total Recipes</h5>
+                    <h2 class="display-4 fw-bold text-primary">{{ total_recipes }}</h2>
+                    <p class="text-muted">recipes created</p>
+                </div>
+            </div>
+        </div>
+        <div class="card dashboard-card p-4 mt-4">
+            <h4 class="text-center mb-4">Recipe Ratings Overview</h4>
+            <div style="height: 300px; width: 80%; margin: 0 auto;">
+                <canvas id="recipeRatingsChart"></canvas>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -124,46 +158,112 @@
                 return;
             }
 
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: recipes.map(recipe => recipe.title),
-                    datasets: [{
-                        label: 'Average Rating',
-                        data: recipes.map(recipe => recipe.avg_rating),
-                        backgroundColor: '#FC8019',  // Changed to green
-                        borderColor: '#FC8019s',      // Darker green border
-                        borderWidth: 1
-                    }]
+ // ...existing code...
+ new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: recipes.map(recipe => recipe.title),
+        datasets: [{
+            label: 'Average Rating',
+            data: recipes.map(recipe => recipe.avg_rating),
+            backgroundColor: [
+                ' #FC8019',
+                ' #FC8019',
+                ' #FC8019',
+                ' #FC8019',
+                ' #FC8019'
+            ],
+            borderColor: 'rgba(255, 255, 255, 0.8)',
+            borderWidth: 2,
+            borderRadius: 10,
+            borderSkipped: false,
+            barPercentage: 0.7,
+            categoryPercentage: 0.8,
+            hoverBackgroundColor: '#FC8019',
+            hoverBorderColor: '#fff',
+            hoverBorderWidth: 3
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: {
+            duration: 1000,
+            easing: 'easeInOutQuart'
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 5,
+                grid: {
+                    color: 'rgba(200, 200, 200, 0.2)',
+                    drawBorder: false,
+                    borderDash: [5, 5]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 5,
-                            grid: {
-                                color: '#f0f0f0'
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                maxRotation: 45,
-                                minRotation: 45
-                            },
-                            grid: {
-                                display: false
-                            }
-                        }
+                ticks: {
+                    font: {
+                        family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+                        size: 12,
+                        weight: '500'
                     },
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        }
+                    padding: 10,
+                    color: '#666'
+                }
+            },
+            x: {
+                ticks: {
+                    maxRotation: 45,
+                    minRotation: 45,
+                    font: {
+                        family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+                        size: 12,
+                        weight: '500'
+                    },
+                    color: '#666'
+                },
+                grid: {
+                    display: false
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    font: {
+                        family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+                        size: 14,
+                        weight: 'bold'
+                    },
+                    padding: 20,
+                    usePointStyle: true,
+                    boxWidth: 8
+                }
+            },
+            tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                titleFont: {
+                    family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+                    size: 14,
+                    weight: 'bold'
+                },
+                bodyFont: {
+                    family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+                    size: 13
+                },
+                padding: 12,
+                cornerRadius: 6,
+                displayColors: false,
+                callbacks: {
+                    label: function(context) {
+                        return `Rating: ${context.raw.toFixed(1)} ⭐`;
                     }
                 }
-            });
+            }
+        }
+    }
+});
+
         } catch (error) {
             console.error('Error creating chart:', error);
         }
