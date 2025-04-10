@@ -10,7 +10,24 @@ import json
 @login_required
 @chef_required
 def chef_dashboard(request):
-    chef_recipes = Recipe.objects.filter(created_by=request.user).annotate(
+    # Get all recipes by the chef
+    chef_recipes = Recipe.objects.filter(created_by=request.user)
+    
+    # Get the total count
+    total_recipes = chef_recipes.count()
+
+    total_system_recipes = Recipe.objects.all().count()
+    
+    # Calculate total average rating
+    total_avg_rating = Recipe.objects.filter(
+        created_by=request.user,
+        ratings__isnull=False
+    ).aggregate(
+        total_avg=models.Avg('ratings__rating')
+    )['total_avg'] or 0
+    
+    # Get the ratings data
+    recipes_with_ratings = chef_recipes.annotate(
         avg_rating=models.Avg('ratings__rating')
     ).values('title', 'avg_rating')
     
@@ -20,14 +37,16 @@ def chef_dashboard(request):
             'title': recipe['title'],
             'avg_rating': float(recipe['avg_rating']) if recipe['avg_rating'] else 0
         }
-        for recipe in chef_recipes
+        for recipe in recipes_with_ratings
     ]
     
     context = {
         'user': request.user,
         'chef_recipes': json.dumps(recipes_data, cls=DjangoJSONEncoder),
-        
-    }
+        'total_recipes': total_recipes,
+        'total_avg_rating': round(float(total_avg_rating), 1),
+        'total_system_recipes':total_system_recipes,
+     }
     return render(request, 'chef_dashboard.html', context)
 
 @login_required
