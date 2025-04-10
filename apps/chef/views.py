@@ -1,11 +1,13 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from apps.common.decorator import chef_required
-from .forms import RecipeForm,IngredientFormSet
+from .forms import RecipeForm,IngredientFormSet,ChefSettingsForm
 from apps.common.models import Recipe,Ingredient,RecipeIngredient,Rating,ReviewReply
 from django.db import models
 from django.core.serializers.json import DjangoJSONEncoder
 import json
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
 
 @login_required
 @chef_required
@@ -144,3 +146,32 @@ def add_review_reply(request, rating_id):
                 reply_text=reply_text
             )
     return redirect('view_review')
+@login_required
+@chef_required
+def chef_settings(request):
+    if request.method == 'POST':
+        form = ChefSettingsForm(request.POST, instance=request.user)
+        if form.is_valid():
+            current_password = form.cleaned_data['current_password']
+            new_password = form.cleaned_data['new_password']
+
+            # Verify current password
+            if not request.user.check_password(current_password):
+                messages.error(request, 'Current password is incorrect')
+                return render(request, 'chef_settings.html', {'form': form})
+
+            # Save email changes
+            user = form.save(commit=False)
+            
+            # Update password if provided
+            if new_password:
+                user.set_password(new_password)
+                update_session_auth_hash(request, user)  # Keep user logged in
+            
+            user.save()
+            messages.success(request, 'Your settings have been updated successfully')
+            return redirect('chef_dashboard')
+    else:
+        form = ChefSettingsForm(instance=request.user)
+    
+    return render(request, 'chef_settings.html', {'form': form})

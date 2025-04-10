@@ -4,14 +4,28 @@
 {% block navlinks %}
 
 <li class="nav-item">
-    <a class="nav-link" href="{% url 'chef_dashboard' %}">Dashboard</a>
+    <a class="nav-link d-flex align-items-center" href="{% url 'chef_dashboard' %}">
+        <i class="fas fa-home me-2"></i>
+        <span>Dashboard</span>
+    </a>
 </li>
 <li class="nav-item">
-    <a class="nav-link" href="{% url 'create_recipe' %}">Add Recipe</a>
+        <a class="nav-link d-flex align-items-center px-3 py-2 rounded-pill mb-2 hover-effect" href="{% url 'create_recipe' %}">
+            <i class="fas fa-plus-circle me-2"></i>
+            Add Recipe
+        </a>
 </li>
-
 <li class="nav-item">
-    <a class="nav-link" href="{% url 'view_review' %}">View Reviews</a>
+    <a class="nav-link d-flex align-items-center px-3 py-2 rounded-pill mb-2 hover-effect" href="{% url 'view_review' %}">
+        <i class="fas fa-star me-2"></i>
+        View Reviews
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link d-flex align-items-center px-3 py-2 rounded-pill mb-2 hover-effect" href="{% url 'chef_settings' %}">
+        <i class="fas fa-cog me-2"></i>
+        Chef Settings
+    </a>
 </li>
 
 
