@@ -13,6 +13,8 @@ urlpatterns = [
     path("recipe/<int:recipe_id>/", views.user_view_recipe, name='user_view_recipe'),
     path('recipe/<int:recipe_id>/favorite/', views.toggle_favorite, name='toggle_favorite'),
     path('search/', views.search_recipe, name='search_recipe'),
-    path('chef_details/', views.chef_details, name='chef_details'),  # List all chefs
-    path('chef_details/<int:user_id>/', views.chef_details, name='chef_detail'),  # Individual chef
+    path('chef-details/', views.chef_details_list, name='chef_details'),  # List all chefs
+    path('chef-details/<int:chef_id>/', views.chef_detail, name='chef_detail'),  # Single chef view
+    path('rate-chef/<int:chef_id>/', views.rate_chef, name='rate_chef'),  # Rating functionality
+    # ...existing code...
 ]

@@ -63,7 +63,7 @@ class Recipe(models.Model):
     cook_time = models.PositiveIntegerField(validators=[MinValueValidator(1)], help_text="Time in minutes")
     category = models.CharField(max_length=20,choices=CATEGORY_CHOICES, default='veg')
     recipe_image = models.ImageField(upload_to='recipe_images/', null=True, blank=True )
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipes')
     ai_generated = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -128,3 +128,15 @@ class ReviewReply(models.Model):
 
     class Meta:
         ordering = ['created_at']
+
+
+class ChefRating(models.Model):
+    chef = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_ratings')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='given_ratings')
+    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    feedback = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('chef', 'user')
+        ordering = ['-created_at']

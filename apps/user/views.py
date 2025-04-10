@@ -5,11 +5,12 @@ from .forms import IngredientForm, UserSettingsForm
 from apps.aistudio.utils import generate
 from django.db import IntegrityError
 from titlecase import titlecase
-from apps.common.models import User, Recipe, GenerateRecipe, Ingredient, RecipeIngredient,Rating,FavoriteRecipe
+from apps.common.models import User, Recipe, GenerateRecipe, Ingredient, RecipeIngredient,Rating,FavoriteRecipe, ChefRating
 import json
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.db import models
+from django.db.models import Avg, Count
 
 @login_required
 @user_required
@@ -296,38 +297,88 @@ def favourite_recipe(request):
     favourite_recipes = Recipe.objects.all()  # Update with actual filtering logic
     return render(request, 'favourite_recipe.html', {'favourite_recipes': favourite_recipes})
 
-def chef_details(request, user_id=None):
-    if user_id:
-        # Show single chef details
-        chef = get_object_or_404(User.objects.annotate(
-            recipe_count=models.Count('recipe', filter=models.Q(recipe__ai_generated=False)),
-            avg_rating=models.Avg('recipe__ratings__rating', filter=models.Q(recipe__ai_generated=False))
-        ), id=user_id)
+@login_required
+def rate_chef(request, chef_id):
+    chef = get_object_or_404(User, id=chef_id)
+    
+    if request.method == 'POST':
+        rating = request.POST.get('rating')
+        feedback = request.POST.get('feedback')
         
-        recipes = Recipe.objects.filter(
-            created_by=chef,
-            ai_generated=False
-        ).annotate(
-            avg_rating=models.Avg('ratings__rating')
+        if not rating:
+            messages.error(request, 'Please provide a rating.')
+            return redirect('chef_detail', chef_id=chef_id)
+        
+        try:
+            rating = int(rating)
+            if not 1 <= rating <= 5:
+                raise ValueError
+        except ValueError:
+            messages.error(request, 'Invalid rating value. Please rate between 1 and 5.')
+            return redirect('chef_detail', chef_id=chef_id)
+        
+        chef_rating, created = ChefRating.objects.update_or_create(
+            chef=chef,
+            user=request.user,
+            defaults={
+                'rating': rating,
+                'feedback': feedback
+            }
         )
         
-        context = {
-            'chef': chef,
-            'recipes': recipes,
-            'single_chef': True
-        }
-    else:
-        # Show all chefs list
-        chefs = User.objects.filter(
-            recipe__ai_generated=False
-        ).distinct().annotate(
-            recipe_count=models.Count('recipe', filter=models.Q(recipe__ai_generated=False)),
-            avg_rating=models.Avg('recipe__ratings__rating', filter=models.Q(recipe__ai_generated=False))
-        )
-        
-        context = {
-                        'chefs': chefs,
-            'single_chef': False
+        action = 'updated' if not created else 'submitted'
+        messages.success(request, f'Rating {action} successfully!')
+        return redirect('chef_detail', chef_id=chef_id)
+    return redirect('chef_detail', chef_id=chef_id)
+
+
+@login_required
+def chef_detail(request, chef_id):
+    """View for single chef details"""
+    chef = get_object_or_404(User, id=chef_id)
+    user_rating = ChefRating.objects.filter(chef=chef, user=request.user).first()
+    chef_ratings = ChefRating.objects.filter(chef=chef).order_by('-created_at')
+    
+    # Get recipes created by this chef
+    recipes = Recipe.objects.filter(created_by=chef).annotate(
+        avg_rating=Avg('ratings__rating')
+    )
+    
+    context = {
+        'chef': chef,
+        'user_rating': user_rating,
+        'chef_ratings': chef_ratings,
+        'recipes': recipes,  # Changed from 'recipe' to 'recipes'
+        'single_chef': True
+    }
+    return render(request, 'chef_details.html', context)
+
+@login_required
+def chef_details_list(request):
+    """View for listing all chefs"""
+    chefs = User.objects.filter(role='chef').annotate(
+        recipe_count=Count('recipes', distinct=True),
+        avg_rating=Avg('received_ratings__rating'),
+        total_ratings=Count('received_ratings', distinct=True),
+        rating_5=Count('received_ratings', filter=models.Q(received_ratings__rating=5), distinct=True),
+        rating_4=Count('received_ratings', filter=models.Q(received_ratings__rating=4), distinct=True),
+        rating_3=Count('received_ratings', filter=models.Q(received_ratings__rating=3), distinct=True),
+        rating_2=Count('received_ratings', filter=models.Q(received_ratings__rating=2), distinct=True),
+        rating_1=Count('received_ratings', filter=models.Q(received_ratings__rating=1), distinct=True)
+    ).prefetch_related('recipes', 'received_ratings')
+    
+    # Calculate rating percentages for each chef
+    for chef in chefs:
+        chef.rating_percentages = {
+            5: (chef.rating_5 / chef.total_ratings * 100) if chef.total_ratings > 0 else 0,
+            4: (chef.rating_4 / chef.total_ratings * 100) if chef.total_ratings > 0 else 0,
+            3: (chef.rating_3 / chef.total_ratings * 100) if chef.total_ratings > 0 else 0,
+            2: (chef.rating_2 / chef.total_ratings * 100) if chef.total_ratings > 0 else 0,
+            1: (chef.rating_1 / chef.total_ratings * 100) if chef.total_ratings > 0 else 0
         }
     
+    context = {
+        'chefs': chefs,
+        'single_chef': False
+    }
     return render(request, 'chef_details.html', context)
