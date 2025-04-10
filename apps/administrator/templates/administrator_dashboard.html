@@ -8,10 +8,9 @@
 <style>
     body {
         background-color: #f4f4f4;
-        font-family: 'Poppins', sans-serif;
     }
     
-    .btn-custom {
+    {% comment %} .btn-custom {
         background-color: #FC8019;
         color: #fff;
         border-radius: 25px;
@@ -20,17 +19,12 @@
         font-weight: bold;
     }
     .btn-custom:hover {
-        background-color: #FC8019;
-    }
+        background-color: #FC8019; {% endcomment %}
+    {% comment %} } {% endcomment %}
     .dashboard-header {
-        background: linear-gradient(to right, #FC8019, #FC8019);
-        color: #fff;
+        color:#000;
         padding: 20px;
         border-radius: 10px;
-        text-align: center;
-        margin-bottom: 20px;
-        font-weight: bold;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     }
     .list-group-item {
         background: #fff;
@@ -56,6 +50,78 @@
     .clearfix {
         clear: both;
     } 
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .card-body {
+        padding: 20px;
+        color:#000;
+    }
+    
+    .card-title {
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .card-text {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin: 0;
+        color:#000;
+    }
+    .stats-card {
+        background: linear-gradient(45deg, #FC8019, #fd9642);
+        border: none;
+        margin-bottom: 20px;
+    }
+    
+    .stats-card small {
+        color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .badge {
+        padding: 8px 12px;
+        border-radius: 20px;
+    }
+    
+    .badge.bg-warning {
+        background-color: #FC8019 !important;
+        color: white;
+    }
+    
+    .list-group-item {
+        transition: transform 0.2s;
+    }
+    
+    .list-group-item:hover {
+        transform: translateX(5px);
+        background-color: #fff9f5;
+    }
+    .action-buttons {
+        margin-top: 15px;
+        text-align: right;
+    }
+    
+    .btn-refresh {
+        background-color: transparent;
+        border: 1px solid #FC8019;
+        color: #FC8019;
+    }
+    
+    .btn-refresh:hover {
+        background-color: #FC8019;
+        color: white;
+    }
+    
 </style>
 
 {% endblock style %}
@@ -78,39 +144,145 @@
 {% block messages %}{% endblock messages %}
     
 {% block content %}
-
-<section class="container mt-4">
-    <div class="chart-container">
-        <h2 class="text-center">Generated Recipes:</h2>
-        <canvas id="trendingChart"></canvas>
-    </div>
-    <div class="recipes-container">
-        <div class="dashboard-header">
-            <h2>Top Rated Recipes</h2>
-            <p>Check the most popular recipes based on user ratings.</p>
+<div class="dashboard-header text-center">
+        <h2>Welcome, Administrator</h2>
+        <p class="mb-0">Here's your overview for today</p>
+</div>
+    <!-- Add Statistics Cards -->
+<section class="container my-5">
+    <div class="row ">
+        <div class="col-md-4">
+            <div class="card stats-card text-white">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Total Recipes</h5>
+                    <h2 class="card-text">{{ total_recipes }}</h2>
+                    <small>Last 30 days: +{{ new_recipes_count }}</small>
+                </div>
+            </div>
         </div>
-        <ul class="list-group" id="top-rated-recipes">
-            <li class="list-group-item">⭐ Spaghetti Carbonara (4.9)</li>
-            <li class="list-group-item">⭐ Chicken Alfredo (4.5)</li>
-            <li class="list-group-item">⭐ Vegan Tofu Stir-fry (5.0)</li>
-            <li class="list-group-item">⭐ Grilled Salmon (4.7)</li>
-            <li class="list-group-item">⭐ Classic Cheeseburger (4.6)</li>
-        </ul>
+        <div class="col-md-4">
+            <div class="card stats-card text-white">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Total Chefs</h5>
+                    <h2 class="card-text">{{ total_chefs }}</h2>
+                    <small>Active: {{ active_chefs_count }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stats-card text-white">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Total Users</h5>
+                    <h2 class="card-text">{{ total_users }}</h2>
+                    <small>Online now: {{ online_users_count }}</small>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
-<section class="container mt-4 clearfix">
-    <div class="dashboard-header">
-        <h2>All Generated Recipes</h2>
-        <p>Browse through the complete list of AI-generated recipes.</p>
+<section class="container mt-4">
+    <div class="row">
+        <!-- Top Rated Recipes -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="card-title mb-0">Top Rated Recipes</h5>
+                    </div>
+                    <div class="list-group">
+                        {% for recipe in top_rated_recipes %}
+                        <div class="list-group-item border-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>{{ recipe.title }}</span>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class="text-center text-muted">No rated recipes yet.</p>
+                        {% endfor %}
+                </div>
+            </div>
+        </div>
     </div>
-    <ul class="list-group" id="all-recipes">
-        <li class="list-group-item">🍽️ Quinoa Avocado Salad (4.2)</li>
-        <li class="list-group-item">🍽️ Spicy Ramen Bowl (4.3)</li>
-        <li class="list-group-item">🍽️ Paneer Butter Masala (4.8)</li>
-        <li class="list-group-item">🍽️ BBQ Chicken Pizza (4.5)</li>
-        <li class="list-group-item">🍽️ Mango Chia Pudding (4.9)</li>
-    </ul>
+
+<!-- Top Rated Chefs -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Top Rated Chefs</h5>
+                        <div class="list-group">
+                            {% for chef in top_rated_chefs %}
+                            <div class="list-group-item border-0">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>{{ chef.username }}</span>
+                                    <span class="badge bg-warning">{{ chef.avg_recipe_rating|floatformat:1 }} ⭐</span>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <p>No rated chefs yet.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        <!-- All Recipes -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Recent Recipes</h5>
+                    <div class="list-group">
+                        {% for recipe in recent_recipes %}
+                        <div class="list-group-item border-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>{{ recipe.title }}</span>
+                                <small class="text-muted">{{ recipe.created_at|date:"M d, Y" }}</small>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p>No recipes available.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="container mt-5">
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title mb-4">All Generated Recipes</h3>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Created Date</th>
+                            <th>Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for recipe in all_recipes %}
+                        <tr>
+                            <td>{{ recipe.title }}</td>
+                            <td>{{ recipe.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                {% if recipe.avg_rating %}
+                                    {{ recipe.avg_rating|floatformat:1 }} ⭐
+                                {% else %}
+                                    No ratings
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">No recipes available</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </section>
 
 {% endblock content %}
