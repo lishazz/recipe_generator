@@ -94,3 +94,30 @@ def toggle_chef_status(request, user_id):
     status = "enabled" if chef.is_active else "disabled"
     messages.success(request, f"Chef {chef.username} has been {status}.")
     return redirect('approve_chef')  # Redirect to chef management page
+
+@login_required
+@administrator_required
+def manage_recipes(request):
+    recipes = Recipe.objects.all().select_related('created_by').annotate(
+        avg_rating=Avg('ratings__rating')
+    ).order_by('-created_at')
+    return render(request, 'manage_recipes.html', {'recipes': recipes})
+
+
+@login_required
+@administrator_required
+def view_recipe(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    return render(request, 'view_recipe.html', {'recipe': recipe})
+
+
+
+@login_required
+@administrator_required
+def delete_recipe(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    if request.method == 'POST':
+        recipe.delete()
+        messages.success(request, 'Recipe deleted successfully.')
+        return redirect('manage_recipes')
+    return redirect('manage_recipes')

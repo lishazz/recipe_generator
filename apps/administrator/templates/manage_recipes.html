@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Recipes|RecipeGen{% endblock title %}
+
+{% block navlinks %}
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'administrator_dashboard' %}">Dashboard</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'approve_chef' %}">Manage Chef</a>
+</li>
+
+{% endblock navlinks %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Manage Recipes</h2>
+    
+    {% if recipes %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Recipe Name</th>
+                    <th>Category</th>
+                    <th>Created Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for recipe in recipes %}
+                <tr>
+                    <td>{{ recipe.title }}</td>
+                    <td>{{ recipe.category }}</td>
+                    <td>{{ recipe.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        <a href="{% url 'view_recipe' recipe.id %}" class="btn btn-zom btn-sm">
+                            <i class="fas fa-eye"></i> View Recipe
+                        </a>
+                        <button class="btn btn-zom btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ recipe.id }}">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                        
+                        <!-- Delete Modal -->
+                        <div class="modal fade" id="deleteModal{{ recipe.id }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Confirm Delete</h5>
+                                        <button type="button" class="btn btn-zom" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to delete "{{ recipe.title }}"?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-zom" data-bs-dismiss="modal">Cancel</button>
+                                        <form action="{% url 'delete_recipe' recipe.id %}" method="POST" style="display: inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-zom">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        No recipes available.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

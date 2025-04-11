@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header  text-black d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">{{ recipe.title }}</h2>
+            <div>
+                <a href="{% url 'manage_recipes' %}" class="btn btn-zom">
+                    <i class="fas fa-arrow-left"></i> Back to Recipes
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="mb-4">
+                        <h4 class="text">Description</h4>
+                        <p>{{ recipe.description }}</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h4 class="text">Ingredients</h4>
+                        <ul class="list-group">
+                            {% for recipe_ingredient in recipe.recipeingredient_set.all %}
+                            <li class="list-group-item">
+                                {{ recipe_ingredient.ingredient.name }} - {{ recipe_ingredient.quantity }} 
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div class="mb-4">
+                        <h4 class="text">Instructions</h4>
+                        <div class="instructions">
+                            {{ recipe.instruction|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Recipe Details</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <strong>Category:</strong> {{ recipe.category }}
+                                </li>
+                                <li class="mb-2">
+                                    <strong>Cooking Time:</strong> {{ recipe.cooking_time }} minutes
+                                </li>
+                                <li class="mb-2">
+                                    <strong>Created By:</strong> {{ recipe.created_by.username }}
+                                </li>
+                                <li class="mb-2">
+                                    <strong>Created On:</strong> {{ recipe.created_at|date:"F d, Y" }}
+                                </li>
+                                <li class="mb-2">
+                                    <strong>Last Updated:</strong> {{ recipe.updated_at|date:"F d, Y" }}
+                                </li>
+                                <li class="mb-2">
+                                    <strong>AI Generated:</strong> {% if recipe.ai_generated %}Yes{% else %}No{% endif %}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <button class="btn btn-zom w-100" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            <i class="fas fa-trash"></i> Delete Recipe
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="btn btn-zom">Confirm Delete</h5>
+                <button type="button" class="btn btn-zom" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete "{{ recipe.title }}"?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-zom" data-bs-dismiss="modal">Cancel</button>
+                <form action="{% url 'delete_recipe' recipe.id %}" method="POST" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-zom"><i class="fas fa-trash"></i>Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
