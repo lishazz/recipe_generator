@@ -64,12 +64,16 @@
                                 {% endcomment %}
                             {% endblock navlinks %}
                             {% if user.is_authenticated %}
-                                <li class="nav-item">
-                                    <a class="nav-link" href={% url 'logout' %}>Logout</a>
+                                <li class="nav-item mx-2">
+                                    <a class="nav-link " href="{% url 'logout' %}">
+                                        <i class="fas fa-sign-out-alt"></i> Logout
+                                    </a>
                                 </li>
                             {% else %}
-                                <li class="nav-item">       
-                                    <a class="nav-link" href={% url 'login_page' %}>Login</a>
+                                <li class="nav-item mx-2">
+                                    <a class="nav-link" href="{% url 'login_page' %}">
+                                        <i class="fas fa-sign-in-alt"></i> Login
+                                    </a>
                                 </li>
                             {% endif %}
                         </li>
