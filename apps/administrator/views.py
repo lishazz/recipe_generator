@@ -5,7 +5,8 @@ from apps.common.models import User,Recipe
 from django.contrib import messages
 from django.utils import timezone
 from datetime import timedelta
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count,Q,Sum,FloatField
+from django.db.models.functions import Cast
 import json
 
 
@@ -77,10 +78,89 @@ def administrator_dashboard(request):
     
     return render(request, "administrator_dashboard.html", context)
 
-
+@login_required
+@administrator_required
 def approve_chef(request):
-    chefs = User.objects.filter(role='chef')  # Get all chefs
-    return render(request, 'approve_chef.html', {'chefs': chefs})
+    # Get chefs with prefetched related data and annotated statistics
+    chefs = User.objects.filter(role='chef').prefetch_related(
+        'recipes',
+        'recipes__ratings',
+        'recipes__favorited_by',
+        'recipes__recipeingredient_set',
+        'received_ratings'
+    ).annotate(
+        # Recipe statistics
+        recipes_count=Count('recipes', distinct=True),
+        total_likes=Count('recipes__favorited_by', distinct=True),
+        total_ratings=Count('recipes__ratings', distinct=True),
+        avg_recipe_rating=Avg('recipes__ratings__rating'),
+        avg_chef_rating=Avg('received_ratings__rating'),
+        
+        # Category counts
+        veg_recipes=Count('recipes', filter=Q(recipes__category='veg')),
+        nonveg_recipes=Count('recipes', filter=Q(recipes__category='nonveg')),
+        
+        # Recent activity
+        recent_recipes=Count(
+            'recipes',
+            filter=Q(recipes__created_at__gte=timezone.now() - timedelta(days=30))
+        ),
+        ai_generated_count=Count(
+            'recipes',
+            filter=Q(recipes__ai_generated=True)
+        ),
+        
+        # Engagement metrics
+        total_ingredients=Count('recipes__recipeingredient', distinct=True),
+        total_reviews=Count('recipes__ratings__review', distinct=True, filter=Q(recipes__ratings__review__isnull=False)),
+        reply_count=Count('reviewreply', distinct=True)
+    ).order_by('-date_joined')
+
+    # Calculate additional statistics for each chef
+    for chef in chefs:
+        # Get recent recipes with detailed stats
+        chef.recent_recipes = chef.recipes.select_related(
+            'category'
+        ).prefetch_related(
+            'ratings',
+            'favorited_by',
+            'recipeingredient_set'
+        ).annotate(
+            rating_count=Count('ratings'),
+            favorite_count=Count('favorited_by'),
+            ingredient_count=Count('recipeingredient'),
+            avg_rating=Avg('ratings__rating')
+        ).order_by('-created_at')[:5]
+
+        # Calculate activity metrics
+        thirty_days_ago = timezone.now() - timedelta(days=30)
+        chef.is_recently_active = chef.recipes.filter(
+            created_at__gte=thirty_days_ago
+        ).exists()
+
+    context = {
+        'chefs': chefs,
+        'total_chefs': chefs.count(),
+        'active_chefs': chefs.filter(is_active=True).count(),
+        'today': timezone.now().date(),
+        'statistics': {
+            'total_recipes': Recipe.objects.filter(
+                created_by__role='chef'
+            ).count(),
+            'total_recipes_last_month': Recipe.objects.filter(
+                created_by__role='chef',
+                created_at__gte=timezone.now() - timedelta(days=30)
+            ).count(),
+            'most_active_category': Recipe.objects.filter(
+                created_by__role='chef'
+            ).values('category').annotate(
+                count=Count('id')
+            ).order_by('-count').first()
+        }
+    }
+    
+    return render(request, 'approve_chef.html', context)
+
 
 def manage_user(request):
     return render(request,'manage_user.html')
