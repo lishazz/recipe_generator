@@ -5,10 +5,23 @@
 {% block navlinks %}
 
 <li class="nav-item">
-    <a class="nav-link" href="{% url 'administrator_dashboard' %}">Dashboard</a>
+    <a class="nav-link d-flex align-items-center" href="{% url 'administrator_dashboard' %}">
+        <i class="fas fa-chart-line me-2"></i>
+        <span>Dashboard</span>
+    </a>
 </li>
 <li class="nav-item">
-    <a class="nav-link" href="{% url 'approve_chef' %}">Manage Chef</a>
+    <a class="nav-link d-flex align-items-center" href="{% url 'approve_chef' %}">
+        <i class="fas fa-user-check me-2"></i>
+        <span>Manage Chef</span>
+    </a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link d-flex align-items-center" href="{% url 'manage_user' %}">
+        <i class="fas fa-users me-2"></i>
+        <span>Manage User</span>
+    </a>
 </li>
 
 {% endblock navlinks %}

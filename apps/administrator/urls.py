@@ -10,4 +10,6 @@ urlpatterns = [
     path('manage_recipes/',views.manage_recipes,name='manage_recipes'),
     path('view-recipe/<int:recipe_id>/',views.view_recipe, name='view_recipe'),
     path('delete-recipe/<int:recipe_id>/',views.delete_recipe, name='delete_recipe'),
+    path('toggle-user/<int:user_id>/', views.toggle_user_status, name='toggle_user_status'),
+    path('delete-user/<int:user_id>/', views.delete_user, name='delete_user'),
 ]

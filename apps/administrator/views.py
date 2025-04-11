@@ -5,8 +5,8 @@ from apps.common.models import User,Recipe
 from django.contrib import messages
 from django.utils import timezone
 from datetime import timedelta
-from django.db.models import Avg, Count,Q,Sum,FloatField
-from django.db.models.functions import Cast
+from django.db.models import Avg, Count,Q
+from django.http import JsonResponse
 import json
 
 
@@ -162,8 +162,43 @@ def approve_chef(request):
     return render(request, 'approve_chef.html', context)
 
 
+@login_required
+@administrator_required
 def manage_user(request):
-    return render(request,'manage_user.html')
+    # Get all general users (excluding staff and superusers)
+    users = User.objects.filter(
+        role='generaluser'
+    ).exclude(
+        Q(is_staff=True) | Q(is_superuser=True)
+    ).order_by('-date_joined')
+    
+    context = {
+        'users': users
+    }
+    return render(request, 'manage_user.html', context)
+
+
+@login_required
+@administrator_required
+def toggle_user_status(request, user_id):
+    if request.method == 'POST':
+        user = get_object_or_404(User, id=user_id, role='generaluser')
+        user.is_active = not user.is_active
+        user.save()
+        messages.success(request, f"User {user.username} has been {'enabled' if user.is_active else 'disabled'}.")
+        return redirect('manage_user')
+    return redirect('manage_user')
+
+@login_required
+@administrator_required
+def delete_user(request, user_id):
+    if request.method == 'POST':
+        user = get_object_or_404(User, id=user_id, role='generaluser')
+        username = user.username
+        user.delete()
+        messages.success(request, f"User {username} has been deleted.")
+        return redirect('manage_user')
+    return redirect('manage_user')
 
 @login_required
 @administrator_required
