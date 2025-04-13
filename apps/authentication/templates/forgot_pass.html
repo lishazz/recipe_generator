@@ -144,7 +144,8 @@
                         <p class="card-text text-center">Enter your email and we'll send you instructions to reset your password</p>
                     </div>
                     <div class="card-body">
-                        <form id="forgot-password-form" action="#" method="POST">
+                        <form id="forgot-password-form" action="{% url 'forgot_password' %}" method="POST">
+                            {% csrf_token %}
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email Address</label>
                                 <div class="input-group">

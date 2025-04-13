@@ -3,6 +3,8 @@ from django.contrib.auth import get_user_model,authenticate, login , logout
 from .forms import CustomUserCreationForm,LoginForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from .utils import send_password_reset_email
+from apps.common.models import User
 
 def home(request):
     return render(request,'home.html')
@@ -54,8 +56,18 @@ def register(request):
 
     return render(request, 'register.html', {'form': form})
 
-def forget_pass(request):
-    return render(request,'forget_pass.html')
+def forgot_password_view(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        try:
+            user = User.objects.get(email=email)
+            send_password_reset_email(request, user)
+            messages.success(request, "Reset link sent! Please check your email.")
+            return redirect("forgot_password")  # Redirect to clear form
+        except User.DoesNotExist:
+            messages.error(request, "No user found with that email.")
+    
+    return render(request, "forgot_pass.html")
 
 
 @login_required
