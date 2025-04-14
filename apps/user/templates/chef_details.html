@@ -113,14 +113,14 @@
                                 <strong> Recipes Created:</strong> {{ chef.recipe_count }}
                             </p>
                             <p class="mb-0">
-                                <i class="fas fa-star text-warning"></i>
+                                {% comment %} <i class="fas fa-star text-warning"></i>
                                 <strong> Rating:</strong> 
                                 {% if chef.avg_rating %}
                                     {{ chef.avg_rating|floatformat:1 }} / 5.0
                                     <small>({{ chef.total_ratings }} ratings)</small>
                                     {% else %}
                                         No ratings yet
-                                    {% endif %}
+                                    {% endif %} {% endcomment %}
                                 </p>
                             </div>
                             <div class="d-grid gap-2">

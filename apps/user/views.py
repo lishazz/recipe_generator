@@ -335,20 +335,23 @@ def rate_chef(request, chef_id):
 @login_required
 def chef_detail(request, chef_id):
     """View for single chef details"""
-    chef = get_object_or_404(User, id=chef_id)
-    user_rating = ChefRating.objects.filter(chef=chef, user=request.user).first()
-    chef_ratings = ChefRating.objects.filter(chef=chef).order_by('-created_at')
+    chef = User.objects.filter(id=chef_id).annotate(
+        recipe_count=Count('recipes', distinct=True),
+        avg_rating=Avg('recipes__ratings__rating'),
+        total_ratings=Count('recipes__ratings', distinct=True)
+    ).first()
     
-    # Get recipes created by this chef
+    if not chef:
+        raise Http404("Chef not found")
+    
+    # Get recipes created by this chef with their ratings
     recipes = Recipe.objects.filter(created_by=chef).annotate(
         avg_rating=Avg('ratings__rating')
     )
     
     context = {
         'chef': chef,
-        'user_rating': user_rating,
-        'chef_ratings': chef_ratings,
-        'recipes': recipes,  # Changed from 'recipe' to 'recipes'
+        'recipes': recipes,
         'single_chef': True
     }
     return render(request, 'chef_details.html', context)
