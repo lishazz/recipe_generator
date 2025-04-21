@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from apps.common.decorator import administrator_required
-from apps.common.models import User,Recipe
+from apps.common.models import User,Recipe,Rating
 from django.contrib import messages
 from django.utils import timezone
 from datetime import timedelta
@@ -236,3 +236,14 @@ def delete_recipe(request, recipe_id):
         messages.success(request, 'Recipe deleted successfully.')
         return redirect('manage_recipes')
     return redirect('manage_recipes')
+
+
+@login_required
+@administrator_required
+def manage_reviews(request):
+    rating = Rating.objects.all().order_by('-created_at')
+    context = {
+        'reviews': rating
+    }
+    return render(request, 'manage_reviews.html', context)
+

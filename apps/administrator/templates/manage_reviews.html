@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Reviews | RecipeGen{% endblock title %}
+
+{% block navlinks %}
+
+<li class="nav-item">
+    <a class="nav-link d-flex align-items-center" href="{% url 'administrator_dashboard' %}">
+        <i class="fas fa-chart-line me-2"></i>
+        <span>Dashboard</span>
+    </a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link d-flex align-items-center" href="{% url 'approve_chef' %}">
+        <i class="fas fa-user-check me-2"></i>
+        <span>Manage Chef</span>
+    </a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link d-flex align-items-center" href="{% url 'manage_user' %}">
+        <i class="fas fa-users me-2"></i>
+        <span>Manage User</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link d-flex align-items-center" href="{% url 'manage_recipes' %}">
+        <i class="fas fa-utensils me-2"></i>
+        <span>Manage Recipe</span>
+    </a>
+</li>
+
+
+{% endblock navlinks %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Manage User Reviews</h2>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>User id </th>
+                            <th>User</th>
+                            <th>Recipe</th>
+                            <th>Rating</th>
+                            <th>Comment</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for review in reviews %}
+                        <tr>
+                            <td>{{ review.user.id }}</td>
+                            <td>{{ review.user.username }}</td>
+                            <td>{{ review.recipe.title }}</td>
+                            <td>{{ review.rating }} ⭐</td>
+                            <td>{{ review.review }}</td>
+                            <td>{{ review.created_at|date:"M d, Y" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">No reviews available</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
